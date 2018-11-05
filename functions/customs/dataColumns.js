@@ -44,5 +44,17 @@ exports.getColumnNames = function (collection)
             {'param' : 'milestone_reached' , 'description' : 'current milestone of the user' , 'required' : false}
         ];
         break;
+        case 'matchup':
+        return [
+            {'param' : 'user' , 'description' : 'user object' , 'data_type': 'object' ,'required' : false},
+            {'param' : 'category_chosen' , 'description' : 'category id that has been chosen by user' , 'data_type': 'string' , 'required' : true},
+            {'param' : 'current_level' , 'description' : 'user current level' , 'data_type': 'integer' , 'required' : true},
+        ];
+        break;
+        case 'getQuestions':
+        return [
+            {'param' : 'category_id' , 'description' : 'user object' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
     }
 }

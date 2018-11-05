@@ -47,6 +47,38 @@ exports.validatePostRequest = function(validationParams , request)
     
 }
 /* 
+Function to validate get request to check required params
+*/
+exports.validateGetRequest = function(validationParams , request)
+{
+    return new Promise (function(resolve , reject) {
+        if(validationParams)
+        {
+            for (i = 0; i < validationParams.length; i++) {
+                
+                if(validationParams[i].required)
+                {
+                    if(!request.query[validationParams[i].param])
+                    {
+                        let error = {validationParams , 'param_missing' : validationParams[i].param};
+                        reject(error);
+                    }
+                }
+                
+                
+                if((validationParams.length - 1) === i)
+                {
+                    resolve();
+                }
+            }
+        }else{
+            resolve();
+        }
+        
+    });
+    
+}
+/* 
 Function to generate unique id on the basis of time 
 */
 exports.generateUUID = function () {

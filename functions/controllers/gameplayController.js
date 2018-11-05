@@ -2,8 +2,6 @@ const vars = require('../customs/preReqs'),
 customHelpers = require('../customs/customHelpers'),
 dbHelper = require('../customs/dbHelper'),
 collectionName = 'gameplay';
-//get params requested for this http request
-var requestedParams = vars.dataColumns.getColumnNames(collectionName);
 
 /* 
     Function to create document
@@ -11,6 +9,9 @@ var requestedParams = vars.dataColumns.getColumnNames(collectionName);
 
 exports.create = function (req , res)
 {
+
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames(collectionName);
     //validate params
     customHelpers.validatePostRequest(requestedParams , req)
     //if validation is successful 
@@ -148,3 +149,31 @@ exports.chunkUpdate = function(req , res)
          customHelpers.sendErrorResponse(err , res);
     }); 
 }
+
+
+exports.matchMeUp = function(req ,res)
+{
+    let collectionName = 'matchup';
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames(collectionName);
+    //validate params
+    customHelpers.validatePostRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+        //call db function to add to data to db
+        dbHelper.addToRealTimeDb(collectionName , 'pending_players' , customHelpers.generateUUID() ,req.body , vars)
+        .then(function(data) {
+           // dbHelper.updateLeaderboard(data.ref , roomId ,vars);
+            //data has been added - send success msg
+              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , data) , res );
+        }).catch(function(err) {
+            //Opps ! There was an error while adding data - send error msg
+             customHelpers.sendErrorResponse(err , res );
+        });
+    })
+    .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });
+}
+

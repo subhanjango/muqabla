@@ -24,6 +24,8 @@ for (let i = 0; i < crudModules.length; i++) {
     vars.app.post('/chunkUpdate' + crudModules[i].module_name, crudModules[i]['controller'].chunkUpdate);
 }
 
+vars.app.post('/matchMeUp' , gameplay_controller.matchMeUp);
+vars.app.get('/getQuestionsForGame' , questions_controller.getQuestions);
 
 //listener for user registration
 exports.userLogger = vars.functions.auth.user().onCreate((user) => {

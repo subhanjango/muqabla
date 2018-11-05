@@ -148,6 +148,33 @@ var uploadFileOnRemoteServer = function(file , vars){
             return snapshot.val();
         });
     }
+
+    var getQuestions = function(categoryID , vars , random)
+    {
+        return new Promise(function(resolve , reject){
+            
+        queryRef = vars.db.collection('questions')
+                  .where("random", ">=" , random)
+                  .where("category","==", categoryID)
+                  .limit(vars.questionPerRound)
+                  .get();
+
+        queryRef.then(function(snapshot)
+        {
+            let dataRecieved =  snapshot.docs.map(function (documentSnapshot) {
+                return documentSnapshot.data();
+            });
+
+            resolve(dataRecieved);
+            
+        }).catch(function(err)
+        {
+            reject(err);
+        });
+
+    });
+        
+    }
     
     
     
@@ -162,5 +189,6 @@ var uploadFileOnRemoteServer = function(file , vars){
     exports.addToRealTimeDb = addToRealTimeDb;
     exports.getFromRealtimeDb = getFromRealtimeDb;
     exports.alreadyExist = alreadyExist;
+    exports.getQuestions = getQuestions;
     
     

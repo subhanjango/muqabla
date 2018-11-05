@@ -61,3 +61,4 @@ exports.errorMsgs = errorMsgs;
 exports.successMsg = successMsg;
 exports.dataColumns = require('./dataColumns');
 exports.rtdb = firebase.database();
+exports.questionPerRound = 10;
