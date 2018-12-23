@@ -89,7 +89,7 @@ var uploadFileOnRemoteServer = function(file , vars){
         {
             query = query.orderBy(orderBy);
         }
-
+        
         return query.where('deleted_at','==',null).get();
     }
     
@@ -181,42 +181,44 @@ var uploadFileOnRemoteServer = function(file , vars){
     var followCategoryByUser = function(userID , collection , vars)
     {
         return new Promise(function(resolve , reject){
-
+            
             let categoriesFollowed = getData(false,false,collection,'userID',userID,false,vars);
-        
+            
             categoriesFollowed.then(function(snapshot)
             {
                 let dataRecieved =  snapshot.docs.map(function (documentSnapshot) {
                     return documentSnapshot.data();
                 });
-
-
+                
+                
                 let incr = 1;
-
+                
                 for(let i = 0 ; i < dataRecieved.length ; i++)
                 {
-                
-                var categoryFollowed = [];
-
-                categoryDetails = getData(false,false,'categories','guid',dataRecieved[i].categoryID,false,vars);
-
-                categoryDetails.then(function(snapshot)
-                {
-
+                    
+                    var categoryFollowed = [];
+                    
+                    categoryDetails = getData(false,false,'categories','guid',dataRecieved[i].categoryID,false,vars);
+                    
+                    categoryDetails.then(function(snapshot)
+                    {
+                        
                         let categoryData = snapshot.docs.map(function (documentSnapshot) {
-                                let res = documentSnapshot.data();
-
-                                res.following_guid = dataRecieved[i].guid;
-
-                                return res;
-                         });
-
-
-
-                Promise.all([categoryFollowers(categoryData[0].guid , vars) ,                                      isFollowingCategory(categoryData[0].guid , userID , vars) , 
-                           getCategoryChildren(categoryData[0].guid , vars)])
-                         .then(function(arr){
-
+                            let res = documentSnapshot.data();
+                            
+                            res.following_guid = dataRecieved[i].guid;
+                            
+                            return res;
+                        });
+                        
+                        
+                        
+                        Promise.all([
+                            categoryFollowers(categoryData[0].guid , vars) ,                         isFollowingCategory(categoryData[0].guid , userID , vars) , 
+                            getCategoryChildren(categoryData[0].guid , vars)
+                        ])
+                        .then(function(arr){
+                            
                             categoryData[0].followers = arr[0];
                             categoryData[0].is_following = arr[1];
                             categoryData[0].children = arr[2];    
@@ -226,17 +228,17 @@ var uploadFileOnRemoteServer = function(file , vars){
                             if(dataRecieved.length === incr)
                             {
                                 resolve(categoryFollowed);
-            
+                                
                             }
                             incr++;
-   
-                         }).catch(function(err){
+                            
+                        }).catch(function(err){
                             reject(err)
-                         });
-
-                });
-                
-            }
+                        });
+                        
+                    });
+                    
+                }
             }).catch(function(err)
             {
                 reject(err);
@@ -244,89 +246,118 @@ var uploadFileOnRemoteServer = function(file , vars){
         });
     }
     
-    var getAllCategories = function(vars)
+    var getAllCategories = function(userID , vars)
     {
         return new Promise(function(resolve , reject){
+     
+            let userID ;
+
+            if(userID)
+            {
+                user_id = userID;
+            }
+            else
+            {
+                user_id = 0;
+            }
 
             let getAllCategories = getData(false,false,'categories',false,false,false,vars);
             
             getAllCategories.then(function(snapshot)
             {
-                let dataRecieved =  snapshot.docs.map(function (documentSnapshot) {
-                    return documentSnapshot.data();
-                });
+                let res = [];
+                snapshot.docs.map(function (documentSnapshot) {
 
-                
+                    let response =  documentSnapshot.data();
+
+                    Promise.all([
+                        categoryFollowers(response.guid , vars) ,                         isFollowingCategory(response.guid , user_id , vars) , 
+                        getCategoryChildren(response.guid , vars)
+                    ])
+                    .then(function(arr){
+                        
+                        response.followers = arr[0];
+                        response.is_following = arr[1];
+                        response.children = arr[2];
+                        res.push(response);
+
+                        if(res.length === snapshot.size)
+                        {
+                            resolve(res);
+                        }
+                    });
+                });
+               
             }).catch(function(err){
                 reject(err);
             });
-
+            
         });
     }
-
+    
     var categoryFollowers = function(categoryId , vars)
     {
-    
-    return new Promise(function(resolve , reject){
-
-        let getAllCategories = getData(false,false,'followCategory','categoryID' ,categoryId,false,vars);
-        getAllCategories.then(function(snapshot){
+        
+        return new Promise(function(resolve , reject){
             
-            resolve(snapshot.size);
-        })
-        .catch(function(err){
-            reject(err);
+            let getAllCategories = getData(false,false,'followCategory','categoryID' ,categoryId,false,vars);
+            getAllCategories.then(function(snapshot){
+                
+                resolve(snapshot.size);
+            })
+            .catch(function(err){
+                reject(err);
+            });
+            
         });
-
-    });
-    
+        
     }
-
+    
     var isFollowingCategory = function(categoryID , userID , vars)
     {
-    return new Promise(function(resolve , reject){
-
-        let getAllCategories = getData(false,false,'followCategory','categoryID' ,categoryID,false,vars);
-        
-        getAllCategories.then(function(snapshot){
+        return new Promise(function(resolve , reject){
             
-            let isFollowing = 0;
-
-            snapshot.docs.map(function(documentSnapshot){
-                if(documentSnapshot.data().userID === userID)
-                {
-                    isFollowing = 1;
-                }
+            let getAllCategories = getData(false,false,'followCategory','categoryID' ,categoryID,false,vars);
+            
+            getAllCategories.then(function(snapshot){
+                
+                let isFollowing = 0;
+                
+                snapshot.docs.map(function(documentSnapshot){
+                    if(documentSnapshot.data().userID === userID)
+                    {
+                        isFollowing = 1;
+                    }
+                });
+                
+                resolve(isFollowing);
+            })
+            .catch(function(err){
+                reject(err);
             });
-
-            resolve(isFollowing);
-        })
-        .catch(function(err){
-            reject(err);
+            
         });
-
-    });
-
+        
     }
     
     var getCategoryChildren = function(categoryID , vars)
     {
-    return new Promise(function(resolve , reject){
-
-        let getAllCategories = getData(false,false,'categories','parent_category',categoryID,false,vars);
-        
-        getAllCategories.then(function(snapshot){
+        return new Promise(function(resolve , reject){
             
-            let dataRecieved = snapshot.docs.map(function(documentSnapshot){
-                return documentSnapshot.data();
+            let getAllCategories = getData(false,false,'categories','parent_category',categoryID,false,vars);
+            
+            getAllCategories.then(function(snapshot){
+                
+                let dataRecieved = snapshot.docs.map(function(documentSnapshot){
+                    return documentSnapshot.data();
+                });
+                
+                resolve(dataRecieved);
+            })
+            .catch(function(err){
+                reject(err);
             });
-
-            resolve(dataRecieved);
-        })
-        .catch(function(err){
-            reject(err);
         });
-    });
     }
     
     

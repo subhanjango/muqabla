@@ -192,7 +192,8 @@ exports.chunkUpdate = function(req , res)
 
 exports.getAllCategories = function(req , res)
 {
-    dbHelper.getAllCategories(vars)
+    
+    dbHelper.getAllCategories(req.query.userID , vars)
     .then(function(snapshot) {
         //data has been updated - send success msg with new data
      customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , snapshot) , res );
