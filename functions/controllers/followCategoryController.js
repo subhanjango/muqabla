@@ -1,7 +1,7 @@
 const vars = require('../customs/preReqs'),
 customHelpers = require('../customs/customHelpers'),
 dbHelper = require('../customs/dbHelper'),
-collectionName = 'questions';
+collectionName = 'followCategory';
 
 /* 
     Function to create document
@@ -15,13 +15,21 @@ exports.create = function (req , res)
     customHelpers.validatePostRequest(requestedParams , req)
     //if validation is successful 
     .then(function(){
-        req.body.random = customHelpers.generateReadableCode();
+        let categories = req.body['categoryID'].split(',');
+        let promises = [];
+        
+        for(let key in categories)
+        {
+        req.body['categoryID'] = categories[key];
+        promises.push(dbHelper.addToDb(collectionName , customHelpers.generateUUID() , req.body , vars));
+        }
         //call db function to add to data to db
-        dbHelper.addToDb(collectionName , customHelpers.generateUUID() , req.body , vars)
-        .then(function() {
+        Promise.all(promises).then(function(data) {
             //data has been added - send success msg
-              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , data) , res);
         }).catch(function(err) {
+
+        console.log(err);
             //Opps ! There was an error while adding data - send error msg
              customHelpers.sendErrorResponse(err , res );
         });
@@ -190,26 +198,32 @@ exports.chunkUpdate = function(req , res)
     }); 
 }
 
-exports.getQuestions = function(req ,res)
+exports.followCategoryByUser = function(req , res)
 {
-    //get params requested for this http request
-    let requestedParams = vars.dataColumns.getColumnNames('getQuestions');
-    //validate params
-    customHelpers.validateGetRequest(requestedParams , req)
-    //if validation is successful 
-    .then(function(){
-        //call db function to add to data to db
-        dbHelper.getQuestions(req.query.category_id , vars )
-        .then(function(data) {
-            //data has been added - send success msg
-              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , data) , res );
-        }).catch(function(err) {
-            //Opps ! There was an error while adding data - send error msg
-             customHelpers.sendErrorResponse(err , res );
-        });
-    })
-    .catch(function(){
-        //requested params are not enough to add data
-        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
-    });
+    //get required params for this request -- overwrite the above requestedParams variable
+   let requestedParams = vars.dataColumns.getColumnNames('followCategoryByUser');    
+   //validate request with the required params
+   customHelpers.validateGetRequest(requestedParams , req)
+   .then(function(){   
+        
+        dbHelper.followCategoryByUser(req.query.userID , 'followCategory' , vars)
+          .then(function(data) {
+                customHelpers.sendSuccessResponse(
+                    customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , data) , 
+                    res 
+               );
+          }).catch(function(err) {
+              //Opps ! There was an error while deleting data - send error msg
+               customHelpers.sendErrorResponse(err , res);
+          }); 
+       
+   })
+   .catch(function(){
+       //requested params are not enough to delete data
+       customHelpers.sendErrorResponse(
+           customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) 
+           , 
+           res
+       );
+   });
 }

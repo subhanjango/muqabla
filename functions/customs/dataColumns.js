@@ -53,7 +53,18 @@ exports.getColumnNames = function (collection)
         break;
         case 'getQuestions':
         return [
-            {'param' : 'category_id' , 'description' : 'user object' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'category_id' , 'description' : 'category_id' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'followCategory':
+        return [
+            {'param' : 'categoryID' , 'description' : 'category id to follow' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'userID' , 'description' : 'follower id' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'followCategoryByUser':
+        return [
+            {'param' : 'userID' , 'description' : 'follower id' , 'data_type': 'string'  , 'required' : true},
         ];
         break;
     }

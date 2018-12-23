@@ -189,3 +189,15 @@ exports.chunkUpdate = function(req , res)
          customHelpers.sendErrorResponse(err , res);
     }); 
 }
+
+exports.getAllCategories = function(req , res)
+{
+    dbHelper.getAllCategories(vars)
+    .then(function(snapshot) {
+        //data has been updated - send success msg with new data
+     customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , snapshot) , res );
+    }).catch(function(err) {
+        //Opps ! There was an error while updating data - send error msg
+         customHelpers.sendErrorResponse(err , res);
+    }); 
+}
