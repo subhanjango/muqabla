@@ -250,7 +250,7 @@ var uploadFileOnRemoteServer = function(file , vars){
     {
         return new Promise(function(resolve , reject){
      
-            let userID ;
+            let user_id ;
 
             if(userID)
             {
@@ -266,6 +266,7 @@ var uploadFileOnRemoteServer = function(file , vars){
             getAllCategories.then(function(snapshot)
             {
                 let res = [];
+                let incr = 1;
                 snapshot.docs.map(function (documentSnapshot) {
 
                     let response =  documentSnapshot.data();
@@ -275,16 +276,20 @@ var uploadFileOnRemoteServer = function(file , vars){
                         getCategoryChildren(response.guid , vars)
                     ])
                     .then(function(arr){
-                        
                         response.followers = arr[0];
                         response.is_following = arr[1];
                         response.children = arr[2];
-                        res.push(response);
 
-                        if(res.length === snapshot.size)
+                        if(!response.is_featured)
+                        {
+                            res.push(response);
+                        }
+
+                        if(incr=== snapshot.size)
                         {
                             resolve(res);
                         }
+                        incr++;
                     });
                 });
                
@@ -295,6 +300,48 @@ var uploadFileOnRemoteServer = function(file , vars){
         });
     }
     
+
+    var categoryDetails = function(categoryID , userID , vars)
+    {
+        return new Promise(function(resolve , reject){
+     
+            let getAllCategories = getData(false,false,'categories','guid',categoryID,false,vars);
+            
+            getAllCategories.then(function(snapshot)
+            {
+                let res = [];
+                snapshot.docs.map(function (documentSnapshot) {
+
+                    let response =  documentSnapshot.data();
+
+                    Promise.all([
+                        categoryFollowers(response.guid , vars) ,                         isFollowingCategory(response.guid , userID , vars) , 
+                        getCategoryChildren(response.guid , vars)
+                    ])
+                    .then(function(arr){
+                        response.followers = arr[0];
+                        response.is_following = arr[1];
+                        response.children = arr[2];
+
+                        res.push(response);
+
+                        if(res.length === snapshot.size)
+                        {
+                            resolve(res);
+                        }
+                    });
+                });
+               
+            }).catch(function(err){
+                console.log(err);
+                reject(err);
+            });
+            
+        });
+    }
+
+
+
     var categoryFollowers = function(categoryId , vars)
     {
         
@@ -374,5 +421,6 @@ var uploadFileOnRemoteServer = function(file , vars){
     exports.getQuestions = getQuestions;
     exports.followCategoryByUser = followCategoryByUser;
     exports.getAllCategories = getAllCategories;
+    exports.categoryDetails = categoryDetails;
     
     

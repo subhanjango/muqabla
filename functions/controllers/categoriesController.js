@@ -4,7 +4,7 @@ dbHelper = require('../customs/dbHelper'),
 collectionName = 'categories';
 
 /* 
-    Function to create document
+Function to create document
 */
 
 exports.create = function (req , res)
@@ -19,21 +19,21 @@ exports.create = function (req , res)
         dbHelper.addToDb(collectionName , customHelpers.generateUUID() , req.body , vars)
         .then(function() {
             //data has been added - send success msg
-              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+            customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
         }).catch(function(err) {
             //Opps ! There was an error while adding data - send error msg
-             customHelpers.sendErrorResponse(err , res );
+            customHelpers.sendErrorResponse(err , res );
         });
     })
     .catch(function(err){
         //requested params are not enough to add data
         customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) , res);
     });
-
+    
 }
 
 /* 
-    Function to get documents
+Function to get documents
 */
 
 exports.get = function(req , res)
@@ -48,7 +48,7 @@ exports.get = function(req , res)
     var findFrom = '';
     //default order by from created_at key
     var orderBy = 'created_at';
-
+    
     //if client has sent limit
     if(req.query.limit)
     {
@@ -85,12 +85,12 @@ exports.get = function(req , res)
     data.then(function(snapshot) {
         //convert data set into array
         var dataRecieved =   snapshot.docs.map(function (documentSnapshot) {
-                return documentSnapshot.data();
-            });
-            //time to send success response to client
-            customHelpers.sendSuccessResponse(
-                customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , dataRecieved) , 
-                res
+            return documentSnapshot.data();
+        });
+        //time to send success response to client
+        customHelpers.sendSuccessResponse(
+            customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , dataRecieved) , 
+            res
             );
         })
         //unable to recieve data
@@ -99,106 +99,139 @@ exports.get = function(req , res)
             customHelpers.sendErrorResponse(
                 customHelpers.createMsgForClient(vars.errorMsgs.ServerError , err) , 
                 res
-            );
-        });
-
-}
-
-/* 
-    Function to delete document
-*/
-
-exports.delete = function(req , res)
-{
-    //get required params for this request -- overwrite the above requestedParams variable
-    let requestedParams = vars.dataColumns.getColumnNames('delete');    
-    //validate request with the required params
-    customHelpers.validatePostRequest(requestedParams , req)
-    .then(function(){   
-
-           //call db function to delete data from db
-           dbHelper.deleteFromDb(collectionName , req.body.ref_id , vars)
-           .then(function() {
-               //data has been deleted - send success msg
-                 customHelpers.sendSuccessResponse(
-                     customHelpers.createMsgForClient(vars.successMsg.deleted , req.body) , 
-                     res 
                 );
-           }).catch(function(err) {
-               //Opps ! There was an error while deleting data - send error msg
-                customHelpers.sendErrorResponse(err , res);
-           }); 
+            });
+            
+        }
         
-    })
-    .catch(function(err){
-        //requested params are not enough to delete data
-        customHelpers.sendErrorResponse(
-            customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) 
-            , 
-            res
-        );
-    });
-}
-
-/* 
-    Function to update the document completely 
-*/
-
-exports.fullUpdate = function(req , res)
-{
-    //get params requested for this http request
-    let requestedParams = vars.dataColumns.getColumnNames(collectionName);
-
-    //validate request with the required params 
-    customHelpers.validatePostRequest(requestedParams , req)
-    .then(function(){   
-            let ref_id = req.body.ref_id;
-            delete req.body['ref_id']; 
-           //call db function to update data
-           dbHelper.fullUpdate(collectionName , ref_id , req.body ,vars)
-           .then(function() {
-               //data has been updated - send success msg
-            customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.updated , req.body) , res );
-           }).catch(function(err) {
-               //Opps ! There was an error while updating data - send error msg
-                customHelpers.sendErrorResponse(err , res);
-           }); 
+        /* 
+        Function to delete document
+        */
         
-    })
-    .catch(function(err){
-        //requested params are not enough to update data
-        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) , res);
-    });
-}
+        exports.delete = function(req , res)
+        {
+            //get required params for this request -- overwrite the above requestedParams variable
+            let requestedParams = vars.dataColumns.getColumnNames('delete');    
+            //validate request with the required params
+            customHelpers.validatePostRequest(requestedParams , req)
+            .then(function(){   
+                
+                //call db function to delete data from db
+                dbHelper.deleteFromDb(collectionName , req.body.ref_id , vars)
+                .then(function() {
+                    //data has been deleted - send success msg
+                    customHelpers.sendSuccessResponse(
+                        customHelpers.createMsgForClient(vars.successMsg.deleted , req.body) , 
+                        res 
+                        );
+                    }).catch(function(err) {
+                        //Opps ! There was an error while deleting data - send error msg
+                        customHelpers.sendErrorResponse(err , res);
+                    }); 
+                    
+                })
+                .catch(function(err){
+                    //requested params are not enough to delete data
+                    customHelpers.sendErrorResponse(
+                        customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) 
+                        , 
+                        res
+                        );
+                    });
+                }
+                
+                /* 
+                Function to update the document completely 
+                */
+                
+                exports.fullUpdate = function(req , res)
+                {
+                    //get params requested for this http request
+                    let requestedParams = vars.dataColumns.getColumnNames(collectionName);
+                    
+                    //validate request with the required params 
+                    customHelpers.validatePostRequest(requestedParams , req)
+                    .then(function(){   
+                        let ref_id = req.body.ref_id;
+                        delete req.body['ref_id']; 
+                        //call db function to update data
+                        dbHelper.fullUpdate(collectionName , ref_id , req.body ,vars)
+                        .then(function() {
+                            //data has been updated - send success msg
+                            customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.updated , req.body) , res );
+                        }).catch(function(err) {
+                            //Opps ! There was an error while updating data - send error msg
+                            customHelpers.sendErrorResponse(err , res);
+                        }); 
+                        
+                    })
+                    .catch(function(err){
+                        //requested params are not enough to update data
+                        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) , res);
+                    });
+                }
+                
+                /* 
+                Function to update a specific chunk of the document
+                */
+                
+                exports.chunkUpdate = function(req , res)
+                {
+                    let ref_id = req.body.ref_id;
+                    delete req.body['ref_id']; 
+                    //call db function to update data 
+                    dbHelper.chunkUpdate(collectionName , ref_id , req.body ,vars)
+                    .then(function(snapshot) {
+                        //data has been updated - send success msg with new data
+                        customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.updated , snapshot) , res );
+                    }).catch(function(err) {
+                        //Opps ! There was an error while updating data - send error msg
+                        customHelpers.sendErrorResponse(err , res);
+                    }); 
+                }
+                
+                exports.getAllCategories = function(req , res)
+                {
+                    
+                    //get params requested for this http request
+                    let requestedParams = vars.dataColumns.getColumnNames('getAllCategories');
+                    //validate request with the required params 
+                    customHelpers.validateGetRequest(requestedParams , req)
+                    .then(function(){  
+                        dbHelper.getAllCategories(req.query.userID, vars)
+                        .then(function(snapshot) {
+                            //data has been updated - send success msg with new data
+                            customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , snapshot) , res );
+                        }).catch(function(err) {
+                            //Opps ! There was an error while updating data - send error msg
+                            customHelpers.sendErrorResponse(err , res);
+                        }); 
+                    })
+                    .catch(function(err){
+                        //requested params are not enough to update data
+                        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) , res);
+                    });
+                }
 
-/* 
-    Function to update a specific chunk of the document
-*/
-
-exports.chunkUpdate = function(req , res)
-{
-    let ref_id = req.body.ref_id;
-    delete req.body['ref_id']; 
-    //call db function to update data 
-    dbHelper.chunkUpdate(collectionName , ref_id , req.body ,vars)
-    .then(function(snapshot) {
-        //data has been updated - send success msg with new data
-     customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.updated , snapshot) , res );
-    }).catch(function(err) {
-        //Opps ! There was an error while updating data - send error msg
-         customHelpers.sendErrorResponse(err , res);
-    }); 
-}
-
-exports.getAllCategories = function(req , res)
-{
-    
-    dbHelper.getAllCategories(req.query.userID , vars)
-    .then(function(snapshot) {
-        //data has been updated - send success msg with new data
-     customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , snapshot) , res );
-    }).catch(function(err) {
-        //Opps ! There was an error while updating data - send error msg
-         customHelpers.sendErrorResponse(err , res);
-    }); 
-}
+                exports.categoryDetails = function(req , res)
+                {
+                    //get params requested for this http request
+                    let requestedParams = vars.dataColumns.getColumnNames('categoryDetails');
+                    //validate request with the required params 
+                    customHelpers.validateGetRequest(requestedParams , req)
+                    .then(function(){  
+                        dbHelper.categoryDetails(req.query.categoryID , req.query.userID , vars)
+                        .then(function(snapshot) {
+                            //data has been updated - send success msg with new data
+                            customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , snapshot) , res );
+                        }).catch(function(err) {
+                            //Opps ! There was an error while updating data - send error msg
+                            customHelpers.sendErrorResponse(err , res);
+                        }); 
+                    })
+                    .catch(function(err){
+                        console.log(err);
+                        //requested params are not enough to update data
+                        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) , res);
+                    });
+                }

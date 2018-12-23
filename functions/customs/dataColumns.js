@@ -67,5 +67,16 @@ exports.getColumnNames = function (collection)
             {'param' : 'userID' , 'description' : 'follower id' , 'data_type': 'string'  , 'required' : true},
         ];
         break;
+        case 'getAllCategories':
+        return [
+            {'param' : 'userID' , 'description' : 'user id' , 'data_type': 'string'  , 'required' : false},
+        ];
+        break;
+        case 'categoryDetails':
+        return [
+            {'param' : 'categoryID' , 'description' : 'category id' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'userID' , 'description' : 'user id' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
     }
 }

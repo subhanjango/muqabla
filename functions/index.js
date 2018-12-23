@@ -32,6 +32,9 @@ vars.app.get('/getQuestionsForGame' , questions_controller.getQuestions);
 vars.app.get('/followCategoryByUser' , follow_category_controller.followCategoryByUser);
 
 vars.app.get('/getAllCategories' , categories_controller.getAllCategories);
+vars.app.get('/categoryDetails' , categories_controller.categoryDetails);
+
+vars.app.post('/submitSinglePlayerResult' , users_controller.submitSinglePlayerResult);
 //listener for user registration
 exports.userLogger = vars.functions.auth.user().onCreate((user) => {
     users_controller.create(user);
