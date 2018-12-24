@@ -177,3 +177,66 @@ exports.matchMeUp = function(req ,res)
     });
 }
 
+exports.submitSinglePlayerResult = function(req , res)
+{
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames('submitSinglePlayerResult');
+    //validate params
+    customHelpers.validatePostRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+        //call db function to add to data to db
+        dbHelper.submitSinglePlayerResult(req.body , vars)
+        .then(function(data) {
+           // dbHelper.updateLeaderboard(data.ref , roomId ,vars);
+            //data has been added - send success msg
+              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , data) , res );
+        }).catch(function(err) {
+            //Opps ! There was an error while adding data - send error msg
+             customHelpers.sendErrorResponse(err , res );
+        });
+    })
+    .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });
+}
+
+exports.leaderboard = function(req , res)
+{
+        dbHelper.leaderboard(vars)
+        .then(function(data) {
+           // dbHelper.updateLeaderboard(data.ref , roomId ,vars);
+            //data has been added - send success msg
+              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , data) , res );
+        }).catch(function(err) {
+            //Opps ! There was an error while adding data - send error msg
+             customHelpers.sendErrorResponse(err , res );
+        });
+}
+
+exports.search = function(req ,res)
+{
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames('search');
+    //validate params
+    customHelpers.validatePostRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+        //call db function to add to data to db
+        dbHelper.search(req.body.keyword , vars)
+        .then(function(data) {
+             customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , {'users' : data['users'] , 'categories' : data['categories']}) , res );
+        }).catch(function(err) {
+            console.log(err);
+
+            //Opps ! There was an error while adding data - send error msg
+             customHelpers.sendErrorResponse(err , res );
+        });
+    })
+    .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });
+}
+

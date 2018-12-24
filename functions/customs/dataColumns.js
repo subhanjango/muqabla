@@ -78,5 +78,24 @@ exports.getColumnNames = function (collection)
             {'param' : 'userID' , 'description' : 'user id' , 'data_type': 'string'  , 'required' : true},
         ];
         break;
+        case 'submitSinglePlayerResult':
+        return [
+            {'param' : 'userID' , 'description' : 'user id' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'correctAnswer' , 'description' : 'correct answer (1 : yes , 0 : no)' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'allCorrectAnswer' , 'description' : 'all correct answers (1 : yes , 0 : no)' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'win' , 'description' : 'win (1)' , 'data_type': 'string'  , 'required' : false},
+            {'param' : 'draw' , 'description' : 'draw (1)' , 'data_type': 'string'  , 'required' : false},
+            {'param' : 'losed' , 'description' : 'lose (1)' , 'data_type': 'string'  , 'required' : false},
+            {'param' : 'categoryTitle' , 'description' : 'playing category title' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'categoryID' , 'description' : 'playing category id' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'search':
+        return [
+            {'param' : 'keyword' , 'description' : 'keyword to search' , 'data_type': 'string'  , 'required' : true}
+        ];
+        break;
+
+        
     }
 }

@@ -406,7 +406,174 @@ var uploadFileOnRemoteServer = function(file , vars){
             });
         });
     }
+
+    var submitSinglePlayerResult = function(request , vars)
+    {
+        return new Promise(function(resolve , reject){
+
+            let user = getData(false , false , 'users' , 'guid' , request.userID , false , vars);
+
+            user.then(function(userData){
+
+                let dataRecieved = userData.docs.map(function(documentSnapshot){
+                    return documentSnapshot.data();
+                });
+
+                let categoryID = request.categoryID;
+
+                dataRecieved = dataRecieved[0];
+
+                if(request.correctAnswer)
+                {
+                    dataRecieved.current_exp = dataRecieved.current_exp ? parseInt(dataRecieved.current_exp) + 1 : 1;
+                }
+
+                if(request.allCorrectAnswer)
+                {
+                    dataRecieved.current_exp = dataRecieved.current_exp ? parseInt(dataRecieved.current_exp) + 10 : 10;
+                }
+
+                if(request.win)
+                {
+                    dataRecieved.games_won = dataRecieved.games_won ? parseInt(dataRecieved.games_won) + 1 : 1;
+
+                    let alreadyWonCategories = dataRecieved.won_categories ? dataRecieved.won_categories : {} ;
+
+                    let currentlyWonCategory = 
+                   {
+                            'title' : request.categoryTitle,
+                            'categoryId' : categoryID
+                   };
+
+                    dataRecieved.won_categories = Object.assign(alreadyWonCategories, currentlyWonCategory);
+
+                }
+
+                if(request.draw)
+                {
+                    dataRecieved.games_draw = dataRecieved.games_draw ? parseInt(dataRecieved.games_draw) + 1 : 1;
+
+                }
+
+                if(request.losed)
+                {
+                    dataRecieved.games_losed = dataRecieved.games_losed ? parseInt(dataRecieved.games_losed) + 1 : 1;
+                }
+
+                if(request.win || request.losed || request.draw)
+                {
+                    
+                    let alreadyPlayedCategories = dataRecieved.played_categories ? dataRecieved.played_categories : {} ;
+
+                    let currentlyPlayedCategory = {
+                        'title' : request.categoryTitle,
+                        'categoryId' : categoryID
+                    };
     
+                    dataRecieved.played_categories = Object.assign(alreadyPlayedCategories, currentlyPlayedCategory);
+
+                    dataRecieved.games_played = dataRecieved.games_played ? parseInt(dataRecieved.games_played) + 1 : 1;
+
+
+                    if(parseInt(dataRecieved.current_exp) % 30 == 0)
+                    {
+                        dataRecieved.total_points = dataRecieved.total_points ? parseInt(dataRecieved.total_points) + 10 : 10;
+                    }
+
+                    if(parseInt(dataRecieved.games_played) % 3 == 0)
+                    {
+                        dataRecieved.total_points = dataRecieved.total_points ? parseInt(dataRecieved.total_points) + 10 : 10;
+                    }
+                }
+
+                
+                fullUpdate('users',request.userID,dataRecieved,vars);
+                resolve(dataRecieved);
+            })
+            .catch(function(err){
+                reject(err);
+            });
+
+        });
+    }
+
+    var leaderboard = function(vars)
+    {
+        return new Promise(function(resolve , reject){
+
+            let users = getData(false , false , 'users' , false, false , 'games_won' , vars);
+
+            users.then(function(userData){
+
+                let dataRecieved = userData.docs.map(function(documentSnapshot){
+                    return documentSnapshot.data();
+                });
+                
+                resolve(dataRecieved.reverse());
+            })
+            .catch(function(err){
+                reject(err);
+            });
+
+        });
+    }
+    
+    var search = function(keyword , vars)
+    {
+        return new Promise(function(resolve , reject){
+
+            let users = getData(false , false , 'users' , false, false , false , vars);
+            let categories = getData(false , false , 'categories' , false, false , false , vars); 
+            let searchResults = [];
+
+            searchResults['users'] = [];
+            searchResults['categories'] = [];
+
+            Promise.all([users , categories])
+            .then(function(response){
+
+                let incr1 = 1;
+
+                response[0].docs.map(function(documentSnapshot){
+                    let userSnapShot =  documentSnapshot.data();
+                  
+                    let username = userSnapShot['first_name'] ? userSnapShot['first_name'] : '';
+                  
+                    if(username.indexOf(keyword) !== -1)
+                    {
+                        searchResults['users'].push(userSnapShot);
+                    }
+
+                    if(incr1 === response[0].size)
+                    {
+                        let incr2 = 1;
+
+                       response[1].docs.map(function(documentSnapshot){
+
+                            let categoriesSnapShot = documentSnapshot.data();
+        
+                            if(categoriesSnapShot['title'].indexOf(keyword) !== -1)
+                            {
+                                searchResults['categories'].push(categoriesSnapShot);
+
+                            }
+
+                            if(incr2 === response[1].size)
+                            {
+                               resolve(searchResults);
+                            }
+
+                            incr2++;
+                        });
+                    }
+                    incr1++;
+                });
+            })
+            .catch(function(err){
+                reject(err);
+            });
+        });
+    }
     
     
     exports.uploadFileOnRemoteServer = uploadFileOnRemoteServer;
@@ -422,5 +589,8 @@ var uploadFileOnRemoteServer = function(file , vars){
     exports.followCategoryByUser = followCategoryByUser;
     exports.getAllCategories = getAllCategories;
     exports.categoryDetails = categoryDetails;
+    exports.submitSinglePlayerResult = submitSinglePlayerResult;
+    exports.leaderboard = leaderboard;
+    exports.search = search;
     
     

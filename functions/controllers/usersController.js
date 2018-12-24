@@ -14,7 +14,11 @@ userObj.total_points = 0;
 userObj.games_played = 0;
 userObj.games_won = 0;
 userObj.current_exp = 0;
-userObj.milestone_reached = 0;
+userObj.games_draw = 0;
+userObj.games_losed = 0;
+userObj.current_level = 0;
+userObj.played_categories = {};
+userObj.won_categories = {};
 //replace all undefined values with null 
 let userJSON = customHelpers.removeUndefinedFromJSON(userObj);
 //call db function to add data to db

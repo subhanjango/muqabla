@@ -27,6 +27,9 @@ for (let i = 0; i < crudModules.length; i++) {
 }
 
 vars.app.post('/matchMeUp' , gameplay_controller.matchMeUp);
+vars.app.post('/submitSinglePlayerResult' , gameplay_controller.submitSinglePlayerResult);
+vars.app.post('/search' , gameplay_controller.search);
+
 vars.app.get('/getQuestionsForGame' , questions_controller.getQuestions);
 
 vars.app.get('/followCategoryByUser' , follow_category_controller.followCategoryByUser);
@@ -34,7 +37,9 @@ vars.app.get('/followCategoryByUser' , follow_category_controller.followCategory
 vars.app.get('/getAllCategories' , categories_controller.getAllCategories);
 vars.app.get('/categoryDetails' , categories_controller.categoryDetails);
 
-vars.app.post('/submitSinglePlayerResult' , users_controller.submitSinglePlayerResult);
+vars.app.get('/leaderboard' , gameplay_controller.leaderboard);
+
+
 //listener for user registration
 exports.userLogger = vars.functions.auth.user().onCreate((user) => {
     users_controller.create(user);
