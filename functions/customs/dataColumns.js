@@ -95,6 +95,11 @@ exports.getColumnNames = function (collection)
             {'param' : 'keyword' , 'description' : 'keyword to search' , 'data_type': 'string'  , 'required' : true}
         ];
         break;
+        case 'leaderboard':
+        return [
+            {'param' : 'categoryID' , 'description' : 'category id' , 'data_type': 'string'  , 'required' : true}
+        ];
+        break;
 
         
     }

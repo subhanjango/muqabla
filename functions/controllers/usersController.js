@@ -80,6 +80,11 @@ data.then(function(snapshot) {
 var dataRecieved =   snapshot.docs.map(function (documentSnapshot) {
 return documentSnapshot.data();
 });
+
+if(dataRecieved.length === 1)
+{
+    dataRecieved = dataRecieved[0];
+}
 //time to send success response to client
 customHelpers.sendSuccessResponse(
 customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , dataRecieved) , 
@@ -180,9 +185,4 @@ exports.chunkUpdate = function(req , res)
         //Opps ! There was an error while updating data - send error msg
         customHelpers.sendErrorResponse(err , res);
     }); 
-}
-
-exports.submitSinglePlayerResult = function(req , res)
-{
-    
 }

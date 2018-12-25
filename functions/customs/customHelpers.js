@@ -11,7 +11,7 @@ Function to create success msgs for client
 */
 exports.sendSuccessResponse = function(happyMsg , res)
 {
-    res.status(200).send({'success' : happyMsg});
+    res.status(200).send(happyMsg);
 }
 /* 
 Function to validate post request to check required params
@@ -104,7 +104,7 @@ Function to create readable msg for the client
 */
 exports.createMsgForClient  = function(msg , data)
 {
-    return {'msg' : msg , 'data' : data};
+    return  {'success' : true , 'msg' : msg , 'data' : data};
 }
 /* 
 Function to replace all undefined values with null from JSON
@@ -222,6 +222,5 @@ exports.externalHit = function(url , isPost , data)
         }
         
     });
-    
-    
+        
 }

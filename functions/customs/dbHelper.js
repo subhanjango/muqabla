@@ -214,16 +214,16 @@ var uploadFileOnRemoteServer = function(file , vars){
                         
                         
                         Promise.all([
-                            categoryFollowers(categoryData[0].guid , vars) ,                         isFollowingCategory(categoryData[0].guid , userID , vars) , 
+                            categoryFollowers(categoryData[0].guid , vars) ,                         isFollowingCategory(categoryData[0].guid , userID , vars) ,              getFollowingGUID(categoryData[0].guid , userID , vars) , 
                             getCategoryChildren(categoryData[0].guid , vars)
                         ])
                         .then(function(arr){
                             
                             categoryData[0].followers = arr[0];
                             categoryData[0].is_following = arr[1];
-                            categoryData[0].children = arr[2];    
+                            categoryData[0].children = arr[3];    
                             
-                            categoryFollowed.push(categoryData);
+                            categoryFollowed.push(categoryData[0]);
                             
                             if(dataRecieved.length === incr)
                             {
@@ -280,7 +280,7 @@ var uploadFileOnRemoteServer = function(file , vars){
                         response.is_following = arr[1];
                         response.children = arr[2];
 
-                        if(!response.is_featured)
+                        if( (!response.is_featured && !response.parent_category) || (response.parent_category == 0 && response.parent_category == 0) )
                         {
                             res.push(response);
                         }
@@ -315,19 +315,21 @@ var uploadFileOnRemoteServer = function(file , vars){
                     let response =  documentSnapshot.data();
 
                     Promise.all([
-                        categoryFollowers(response.guid , vars) ,                         isFollowingCategory(response.guid , userID , vars) , 
+                        categoryFollowers(response.guid , vars) ,                         isFollowingCategory(response.guid , userID , vars) ,
+                        getFollowingGUID(response.guid , userID , vars), 
                         getCategoryChildren(response.guid , vars)
                     ])
                     .then(function(arr){
                         response.followers = arr[0];
                         response.is_following = arr[1];
-                        response.children = arr[2];
+                        response.following_guid = arr[2];
+                        response.children = arr[3];
 
                         res.push(response);
 
                         if(res.length === snapshot.size)
                         {
-                            resolve(res);
+                            resolve(res[0]);
                         }
                     });
                 });
@@ -386,6 +388,33 @@ var uploadFileOnRemoteServer = function(file , vars){
         });
         
     }
+
+    var getFollowingGUID = function(categoryID , userID , vars)
+    {
+        return new Promise(function(resolve , reject){
+            
+            let getAllCategories = getData(false,false,'followCategory','categoryID' ,categoryID,false,vars);
+            
+            getAllCategories.then(function(snapshot){
+                
+                let followingGUID = 0;
+                
+                snapshot.docs.map(function(documentSnapshot){
+                    if(documentSnapshot.data().userID === userID)
+                    {
+                        followingGUID = documentSnapshot.data().guid;
+                    }
+                });
+                
+                resolve(followingGUID);
+            })
+            .catch(function(err){
+                reject(err);
+            });
+            
+        });
+        
+    };
     
     var getCategoryChildren = function(categoryID , vars)
     {
@@ -423,54 +452,60 @@ var uploadFileOnRemoteServer = function(file , vars){
 
                 dataRecieved = dataRecieved[0];
 
-                if(request.correctAnswer)
+                if(request.correctAnswer && request.correctAnswer == 1)
                 {
                     dataRecieved.current_exp = dataRecieved.current_exp ? parseInt(dataRecieved.current_exp) + 1 : 1;
                 }
 
-                if(request.allCorrectAnswer)
+                if(request.allCorrectAnswer && request.allCorrectAnswer == 1)
                 {
                     dataRecieved.current_exp = dataRecieved.current_exp ? parseInt(dataRecieved.current_exp) + 10 : 10;
                 }
 
-                if(request.win)
+                if(request.win && request.win == 1)
                 {
                     dataRecieved.games_won = dataRecieved.games_won ? parseInt(dataRecieved.games_won) + 1 : 1;
 
                     let alreadyWonCategories = dataRecieved.won_categories ? dataRecieved.won_categories : {} ;
 
-                    let currentlyWonCategory = 
+                    alreadyWonCategories[generateUUID()] = 
                    {
                             'title' : request.categoryTitle,
-                            'categoryId' : categoryID
+                            'categoryId' : categoryID,
+                            
                    };
 
-                    dataRecieved.won_categories = Object.assign(alreadyWonCategories, currentlyWonCategory);
+                   let dataForLeaderBoard = {
+                       'category' : categoryID,
+                       'user' : dataRecieved
+                   };
+                   addToDb('leaderboard',generateUUID(),dataForLeaderBoard,vars);
+                    dataRecieved.won_categories = alreadyWonCategories;
 
                 }
 
-                if(request.draw)
+                if(request.draw && request.draw == 1)
                 {
                     dataRecieved.games_draw = dataRecieved.games_draw ? parseInt(dataRecieved.games_draw) + 1 : 1;
 
                 }
 
-                if(request.losed)
+                if(request.losed && request.losed == 1)
                 {
                     dataRecieved.games_losed = dataRecieved.games_losed ? parseInt(dataRecieved.games_losed) + 1 : 1;
                 }
 
-                if(request.win || request.losed || request.draw)
+                if(request.win == 1 || request.losed == 1 || request.draw == 1)
                 {
                     
                     let alreadyPlayedCategories = dataRecieved.played_categories ? dataRecieved.played_categories : {} ;
 
-                    let currentlyPlayedCategory = {
+                    alreadyPlayedCategories[generateUUID()] = {
                         'title' : request.categoryTitle,
                         'categoryId' : categoryID
                     };
     
-                    dataRecieved.played_categories = Object.assign(alreadyPlayedCategories, currentlyPlayedCategory);
+                    dataRecieved.played_categories = alreadyPlayedCategories;
 
                     dataRecieved.games_played = dataRecieved.games_played ? parseInt(dataRecieved.games_played) + 1 : 1;
 
@@ -486,30 +521,49 @@ var uploadFileOnRemoteServer = function(file , vars){
                     }
                 }
 
-                
-                fullUpdate('users',request.userID,dataRecieved,vars);
+                addToDb('users',request.userID,dataRecieved,vars);
                 resolve(dataRecieved);
             })
             .catch(function(err){
+                console.log(err);
                 reject(err);
             });
 
         });
     }
 
-    var leaderboard = function(vars)
+    var leaderboard = function(categoryID , vars)
     {
         return new Promise(function(resolve , reject){
 
-            let users = getData(false , false , 'users' , false, false , 'games_won' , vars);
+            let users = getData(false , false , 'leaderboard' , 'category', categoryID , false , vars);
 
             users.then(function(userData){
 
+                let results = {};
                 let dataRecieved = userData.docs.map(function(documentSnapshot){
-                    return documentSnapshot.data();
+                    let userData =  documentSnapshot.data().user;
+
+                    userData.category_wins = results[userData.guid] ? parseInt(userData.category_wins) + 1 : 1;
+                    
+                    results[userData.guid] = userData;
+
+                    return results;
                 });
                 
-                resolve(dataRecieved.reverse());
+                let finalResult = [];
+                let incr = 1;
+                for(let key in dataRecieved)
+                {
+                    finalResult.push(dataRecieved[key]);
+                    if(incr === dataRecieved.length)
+                    {
+                        resolve(finalResult.sort(function(a, b) {
+                            return a.category_wins > b.category_wins;
+                        }));
+                    }
+                    incr++;
+                }
             })
             .catch(function(err){
                 reject(err);
@@ -552,7 +606,7 @@ var uploadFileOnRemoteServer = function(file , vars){
 
                             let categoriesSnapShot = documentSnapshot.data();
         
-                            if(categoriesSnapShot['title'].indexOf(keyword) !== -1)
+                            if(categoriesSnapShot['title'].indexOf(keyword) !== -1 && categoriesSnapShot['is_featured'] == 0)
                             {
                                 searchResults['categories'].push(categoriesSnapShot);
 
@@ -572,6 +626,18 @@ var uploadFileOnRemoteServer = function(file , vars){
             .catch(function(err){
                 reject(err);
             });
+        });
+    }
+
+    var generateUUID = function () {
+        var d = new Date().getTime();
+        if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+            d += performance.now(); //use high-precision timer if available
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
     }
     

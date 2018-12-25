@@ -204,15 +204,26 @@ exports.submitSinglePlayerResult = function(req , res)
 
 exports.leaderboard = function(req , res)
 {
-        dbHelper.leaderboard(vars)
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames('leaderboard');
+    //validate params
+    customHelpers.validateGetRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+        
+        dbHelper.leaderboard(req.query.categoryID , vars)
         .then(function(data) {
-           // dbHelper.updateLeaderboard(data.ref , roomId ,vars);
             //data has been added - send success msg
               customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , data) , res );
         }).catch(function(err) {
             //Opps ! There was an error while adding data - send error msg
              customHelpers.sendErrorResponse(err , res );
         });
+    })
+    .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });
 }
 
 exports.search = function(req ,res)
