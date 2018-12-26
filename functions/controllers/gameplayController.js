@@ -213,6 +213,7 @@ exports.leaderboard = function(req , res)
         
         dbHelper.leaderboard(req.query.categoryID , vars)
         .then(function(data) {
+            
             //data has been added - send success msg
               customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , data) , res );
         }).catch(function(err) {
