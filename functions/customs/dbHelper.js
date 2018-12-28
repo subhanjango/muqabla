@@ -540,6 +540,11 @@ var uploadFileOnRemoteServer = function(file , vars){
 
             users.then(function(userData){
 
+                if(!userData.size)
+                {
+                    resolve([]);
+                }
+
                 let results = {};
                 let dataRecieved = userData.docs.map(function(documentSnapshot){
                     let userData =  documentSnapshot.data().user;
@@ -550,12 +555,13 @@ var uploadFileOnRemoteServer = function(file , vars){
 
                     return results;
                 });
-                
+
                 let finalResult = [];
                 let incr = 1;
-                for(let key in dataRecieved)
+
+                for(let key in dataRecieved[0])
                 {
-                    finalResult.push(dataRecieved[key]);
+                    finalResult.push(dataRecieved[0][key]);
                     if(incr === dataRecieved.length)
                     {
                         resolve(finalResult.sort(function(a, b) {
