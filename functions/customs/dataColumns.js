@@ -62,6 +62,12 @@ exports.getColumnNames = function (collection)
             {'param' : 'userID' , 'description' : 'follower id' , 'data_type': 'string'  , 'required' : true},
         ];
         break;
+        case 'followUser':
+        return [
+            {'param' : 'following_user_id' , 'description' : 'id of the user who will be followed' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'follower_user_id' , 'description' : 'id of the user who will follow' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
         case 'followCategoryByUser':
         return [
             {'param' : 'userID' , 'description' : 'follower id' , 'data_type': 'string'  , 'required' : true},
@@ -92,7 +98,8 @@ exports.getColumnNames = function (collection)
         break;
         case 'search':
         return [
-            {'param' : 'keyword' , 'description' : 'keyword to search' , 'data_type': 'string'  , 'required' : true}
+            {'param' : 'keyword' , 'description' : 'keyword to search' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'user_id' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
         ];
         break;
         case 'leaderboard':
@@ -100,7 +107,38 @@ exports.getColumnNames = function (collection)
             {'param' : 'categoryID' , 'description' : 'category id' , 'data_type': 'string'  , 'required' : true}
         ];
         break;
-
-        
+        case 'removeFollow':
+        return [
+            {'param' : 'following_user_id' , 'description' : 'id of the user who will be followed' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'follower_user_id' , 'description' : 'id of the user who will follow' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'matchMeUp':
+        return [
+            {'param' : 'user_id' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'category_id' , 'description' : 'category id that has been selected' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'removeFromQueue':
+        return [
+            {'param' : 'user_id' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'category_id' , 'description' : 'category id that has been selected' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'endRoom':
+        return [
+            {'param' : 'roomID' , 'description' : 'room id' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'categoryID' , 'description' : 'category id that has been selected' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+        case 'submitMultiplayerPlayerResult':
+        return [
+            {'param' : 'playerID' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'categoryID' , 'description' : 'category id that has been selected' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'roomID' , 'description' : 'room id' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'rightAnswer' , 'description' : '1 if yes , 0 if no' , 'data_type': 'string'  , 'required' : true},
+        ];
+        break;
+    
     }
 }

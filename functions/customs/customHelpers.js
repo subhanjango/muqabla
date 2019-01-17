@@ -65,7 +65,6 @@ exports.validateGetRequest = function(validationParams , request)
                     }
                 }
                 
-                
                 if((validationParams.length - 1) === i)
                 {
                     resolve();
@@ -224,3 +223,50 @@ exports.externalHit = function(url , isPost , data)
     });
         
 }
+
+exports.makeNotificationData = function(notificationData , customData , replacers , device_token)
+{
+    var striptags = require('striptags');
+
+    let notificationBody = notificationData.body;
+
+    let notificationReplacers = notificationData['replacer'].split(',');
+    
+    notificationReplacers.map(function(wildcard, index){
+        if(wildcard != '')
+      notificationBody =  notificationBody.replace(wildcard, replacers[index]);
+    });
+
+
+    customData.notificationDescription = notificationBody;
+
+    customData = JSON.stringify(customData);
+
+    notificationBody = striptags(notificationBody);
+    
+    notification = {
+        'title' :  notificationData.title,
+        'body' : notificationBody,
+    };
+    
+    return {
+        "token" : device_token,
+        "notification": notification,
+        "data" : {
+            customData
+        },
+        "android": {
+            "notification": {
+                "sound": "default"
+            }
+        },
+        "apns": {
+            "payload": {
+                "aps": {
+                    "sound": "default"
+                }
+            }
+        }
+    };
+}
+

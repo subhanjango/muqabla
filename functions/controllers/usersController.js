@@ -10,6 +10,8 @@ Function to add user into collection when registered
 exports.create =  function(user)
 {
 let userObj = user.toJSON();
+let userRTDBCollection = 'userKeys';
+
 userObj.total_points = 0;
 userObj.games_played = 0;
 userObj.games_won = 0;
@@ -19,10 +21,16 @@ userObj.games_losed = 0;
 userObj.current_level = 0;
 userObj.played_categories = {};
 userObj.won_categories = {};
+userObj.followers_count = 0;
+userObj.following_count = 0;
+userObj.first_name = userObj.first_name ? userObj.first_name : userObj.displayName;
+userObj.notification_status = 1;
 //replace all undefined values with null 
 let userJSON = customHelpers.removeUndefinedFromJSON(userObj);
+let userUniqueGUID = customHelpers.generateUUID();
 //call db function to add data to db
-dbHelper.addToDb(collectionName , customHelpers.generateUUID() , userJSON , vars);    
+dbHelper.addToDb(collectionName , userUniqueGUID , userJSON , vars);  
+dbHelper.addToRealTimeDb(userRTDBCollection , user.uid , 'userGUID' , userUniqueGUID , vars);  
 }
 
 /* 

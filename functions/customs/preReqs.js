@@ -25,6 +25,15 @@ errorMsgs = {
   'noFriends' : 'User has no friends'
 },
 
+notifications = {
+  'followUser' : {
+    'title' : 'You just got followed',
+    'body' : '<b>[USER_NAME]</b> is now <b>following</b> you',
+    'replacer' : '[USER_NAME]'
+  }
+}
+
+
 //configurations (firebase)
 config = {
   apiKey: "AIzaSyDNgEjuMHwiUjGs9iWRxPU5hnMzWl0hbcI",
@@ -59,6 +68,7 @@ exports.storage = storage;
 exports.multer = multer;
 exports.errorMsgs = errorMsgs;
 exports.successMsg = successMsg;
+exports.notifications = notifications;
 exports.dataColumns = require('./dataColumns');
 exports.rtdb = firebase.database();
 exports.questionPerRound = 10;

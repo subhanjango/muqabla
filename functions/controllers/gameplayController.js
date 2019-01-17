@@ -153,25 +153,26 @@ exports.chunkUpdate = function(req , res)
 
 exports.matchMeUp = function(req ,res)
 {
-    let collectionName = 'matchup';
     //get params requested for this http request
-    let requestedParams = vars.dataColumns.getColumnNames(collectionName);
+    let requestedParams = vars.dataColumns.getColumnNames('matchMeUp');
     //validate params
     customHelpers.validatePostRequest(requestedParams , req)
     //if validation is successful 
     .then(function(){
         //call db function to add to data to db
-        dbHelper.addToRealTimeDb(collectionName , 'pending_players' , customHelpers.generateUUID() ,req.body , vars)
+        dbHelper.addToQueue(req.body.user_id , req.body.category_id , vars)
         .then(function(data) {
            // dbHelper.updateLeaderboard(data.ref , roomId ,vars);
             //data has been added - send success msg
               customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , data) , res );
         }).catch(function(err) {
+            console.log(err);
             //Opps ! There was an error while adding data - send error msg
              customHelpers.sendErrorResponse(err , res );
         });
     })
-    .catch(function(){
+    .catch(function(err){
+        console.log(err);
         //requested params are not enough to add data
         customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
     });
@@ -236,7 +237,7 @@ exports.search = function(req ,res)
     //if validation is successful 
     .then(function(){
         //call db function to add to data to db
-        dbHelper.search(req.body.keyword , vars)
+        dbHelper.search(req.body.keyword , req.body.user_id , vars)
         .then(function(data) {
              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.dataRetrieved , {'users' : data['users'] , 'categories' : data['categories']}) , res );
         }).catch(function(err) {
@@ -250,5 +251,97 @@ exports.search = function(req ,res)
         //requested params are not enough to add data
         customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
     });
+}
+
+exports.removeFromQueue = function(req , res)
+{
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames('removeFromQueue');
+    //validate params
+    customHelpers.validatePostRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+        //call db function to add to data to db
+        dbHelper.removeFromQueue(req.body.user_id , req.body.category_id , vars)
+        .then(function() {
+             customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.deleted , req.body) , res );
+        }).catch(function(err) {
+            console.log(err);
+
+            //Opps ! There was an error while adding data - send error msg
+             customHelpers.sendErrorResponse(err , res );
+        });
+    })
+    .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });
+}
+
+
+exports.endRoom = function(req , res)
+{
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames('endRoom');
+    //validate params
+    customHelpers.validatePostRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+        //call db function to add to data to db
+        dbHelper.endRoom(req.body.categoryID , req.body.roomID , vars)
+        .then(function() {
+             customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.updated , req.body) , res );
+        }).catch(function(err) {
+            console.log(err);
+
+            //Opps ! There was an error while adding data - send error msg
+             customHelpers.sendErrorResponse(err , res );
+        });
+    })
+    .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });
+}
+
+exports.submitMultiplayerPlayerResult = function(req , res)
+{
+//get params requested for this http request
+let requestedParams = vars.dataColumns.getColumnNames('submitMultiplayerPlayerResult');
+//validate params
+customHelpers.validatePostRequest(requestedParams , req)
+//if validation is successful 
+.then(function(){
+    //call db function to add to data to db
+    dbHelper.submitMultiplayerPlayerResult(req.body.playerID , req.body.categoryID , req.body.roomID , req.body.rightAnswer , vars)
+    .then(function() {
+         customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+    }).catch(function(err) {
+        console.log(err);
+
+        //Opps ! There was an error while adding data - send error msg
+         customHelpers.sendErrorResponse(err , res );
+    });
+})
+.catch(function(){
+    //requested params are not enough to add data
+    customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+});
+}
+
+exports.testing = function(req , res)
+{
+    let data = {
+        playerID : '18c2ed73-a06b-4c52-a8dc-355a70e7cde0' ,
+        categoryID : '05299b8f-84fe-4441-8d34-934f704faa3b',
+        roomID : req.body.room ,
+        rightAnswer : 1
+    }
+
+    dbHelper.addToRealTimeDb('userResults' , req.body.room , '18c2ed73-a06b-4c52-a8dc-355a70e7cde0' , data , vars);
+
+    customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+
+
 }
 

@@ -10,18 +10,19 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "firebase-admin": "~6.0.0",
-    "firebase-functions": "2.1.0",
     "busboy": "^0.2.14",
     "csvtojson": "^2.0.8",
     "express": "^4.16.3",
     "express-fileupload": "^1.0.0-alpha.1",
     "firebase": "^5.5.3",
+    "firebase-admin": "~6.0.0",
+    "firebase-functions": "2.1.0",
     "formidable": "^1.2.1",
     "get-csv": "^3.0.3",
     "mock-express-request": "^0.2.2",
     "multer": "^1.4.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "striptags": "^3.1.1"
   },
   "devDependencies": {
     "eslint": "^4.12.0",

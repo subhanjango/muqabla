@@ -7,6 +7,7 @@ const questions_controller = require('./controllers/questionsController.js');
 const users_controller = require('./controllers/usersController.js');
 const categories_controller = require('./controllers/categoriesController.js');
 const follow_category_controller = require('./controllers/followCategoryController.js');
+const follow_user_controller = require('./controllers/followUserController.js');
 
 var crudModules = [
     { 'module_name': 'Gameplay', 'controller': gameplay_controller },
@@ -14,6 +15,7 @@ var crudModules = [
     { 'module_name': 'User', 'controller': users_controller },
     { 'module_name': 'Categories', 'controller': categories_controller },
     { 'module_name': 'followCategory', 'controller': follow_category_controller },
+    { 'module_name': 'followUser', 'controller': follow_user_controller },
 ];
 
 //routes
@@ -27,8 +29,11 @@ for (let i = 0; i < crudModules.length; i++) {
 }
 
 vars.app.post('/matchMeUp' , gameplay_controller.matchMeUp);
+vars.app.post('/removeFromQueue' , gameplay_controller.removeFromQueue);
 vars.app.post('/submitSinglePlayerResult' , gameplay_controller.submitSinglePlayerResult);
 vars.app.post('/search' , gameplay_controller.search);
+vars.app.post('/submitMultiplayerPlayerResult' , gameplay_controller.submitMultiplayerPlayerResult);
+vars.app.post('/endRoom' , gameplay_controller.endRoom);
 
 vars.app.get('/getQuestionsForGame' , questions_controller.getQuestions);
 
@@ -39,10 +44,15 @@ vars.app.get('/categoryDetails' , categories_controller.categoryDetails);
 
 vars.app.get('/leaderboard' , gameplay_controller.leaderboard);
 
+vars.app.post('/removeFollowUser' , follow_user_controller.removeFollowUser);
+
+vars.app.post('/checkRTDB' , gameplay_controller.testing);
 
 //listener for user registration
 exports.userLogger = vars.functions.auth.user().onCreate((user) => {
     users_controller.create(user);
 });
+
+
 
 exports.api = vars.functions.https.onRequest(vars.app);

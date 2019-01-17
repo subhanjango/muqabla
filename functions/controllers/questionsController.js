@@ -195,6 +195,7 @@ exports.getQuestions = function(req ,res)
     //get params requested for this http request
     let requestedParams = vars.dataColumns.getColumnNames('getQuestions');
     //validate params
+
     customHelpers.validateGetRequest(requestedParams , req)
     //if validation is successful 
     .then(function(){
