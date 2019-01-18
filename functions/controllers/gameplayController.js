@@ -332,13 +332,13 @@ customHelpers.validatePostRequest(requestedParams , req)
 exports.testing = function(req , res)
 {
     let data = {
-        playerID : '18c2ed73-a06b-4c52-a8dc-355a70e7cde0' ,
-        categoryID : '05299b8f-84fe-4441-8d34-934f704faa3b',
+        playerID : req.body.playerID  ,
+        categoryID : req.body.categoryID ,
         roomID : req.body.room ,
         rightAnswer : 1
     }
 
-    dbHelper.addToRealTimeDb('userResults' , req.body.room , '18c2ed73-a06b-4c52-a8dc-355a70e7cde0' , data , vars);
+    dbHelper.addToRealTimeDb('userResults' , req.body.room , req.body.playerID , data , vars);
 
     customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
 

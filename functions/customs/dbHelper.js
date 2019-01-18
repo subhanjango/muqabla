@@ -128,34 +128,35 @@ return vars.db.collection(collection).where(column,'==',dataToCheck).get();
 
 var addToRealTimeDb = function (collection , parentID ,uniqueID , data  ,vars)
 {
-return new Promise ( function(resolve , reject){
+    return new Promise ( function(resolve , reject){
 
-data.guid = uniqueID;
-data.created_at = new Date().getTime();
-data.deleted_at = null;
-let ref = vars.rtdb.ref(collection +'/'+parentID+'/' + uniqueID);
-var dataToSave = ref.set(data);
+    data.guid = uniqueID;
+    data.created_at = new Date().getTime();
+    data.deleted_at = null;
+    let ref = vars.rtdb.ref(collection +'/'+parentID+'/' + uniqueID);
+    var dataToSave = ref.set(data);
 
-if(dataToSave)
-{
-let data = getFromRealtimeDb(collection , parentID , vars);
-if(data)
-{
-    data.ref = vars.rtdb.ref(collection +'/'+parentID+'/');
-    resolve(data);
-}
-}else{
-reject(vars.errorMsgs.adderror);
-}
-});
+        resolve(dataToSave);
+
+    });
 
 }
 
 var getFromRealtimeDb = function (collection , refID , vars)
 {
-return vars.rtdb.ref('/'+collection+'/'+refID+'/').once('value').then(function(snapshot) {
-return snapshot.val();
-});
+
+    return new Promise(function(resolve , reject){
+        
+        vars.rtdb.ref('/'+collection+'/'+refID+'/').once('value')
+        .then(function(snapshot) {
+            resolve(snapshot.val());
+        })
+        .catch(function(err){
+            reject(err);
+        });
+
+    });
+
 }
 
 var removeFromRealtimeDb = function(path , vars)
@@ -467,6 +468,7 @@ reject(err);
 
 var submitSinglePlayerResult = function(request , vars)
 {
+
 return new Promise(function(resolve , reject){
 
 let user = getData(false , false , 'users' , 'guid' , request.userID , false , vars);
@@ -1015,7 +1017,8 @@ getQuestions(categoryID , vars)
     let presenceRef1  = vars.rtdb.ref(presenceCollection+'/'+player1Obj.guid);
     let presenceRef2  = vars.rtdb.ref(presenceCollection+'/'+player2Obj.guid);
 
-    let userResultsRef1 = vars.rtdb.ref('userResults/'+newRoomID+'/'+player1Obj.guid);        let userResultsRef2 = vars.rtdb.ref('userResults/'+newRoomID+'/'+player2Obj.guid);          
+    // let userResultsRef1 = vars.rtdb.ref('userResults/'+newRoomID+'/'+player1Obj.guid);        
+    // let userResultsRef2 = vars.rtdb.ref('userResults/'+newRoomID+'/'+player2Obj.guid);          
     
     presenceRef1.on('value', (snapshot) => {
         
@@ -1035,35 +1038,38 @@ getQuestions(categoryID , vars)
         
     });
 
-    userResultsRef1.on('value' , (snapshot) => {
-        console.log('player1 call');
-        let value = snapshot.val();
-        if(value)
-        {
-            submitMultiplayerPlayerResult(value.playerID , value.categoryID , value.roomID , value.rightAnswer , vars)
-            .then(function(data){
-                console.log('player1 call completed' , new Date().toDateString);
-            })
-            .catch(function(err){
-                console.log('player1 call failed' , new Date().toDateString);
-            });
-        }
-    });
+    // userResultsRef1.on('value' , (snapshot) => {
+    //     console.log('player1 call');
+    //     let value = snapshot.val();
+    //     if(value)
+    //     {
 
-    userResultsRef2.on('value' , (snapshot) => {
-        console.log('player2 call');
-        let value = snapshot.val();
-        if(value)
-        {
-            submitMultiplayerPlayerResult(value.playerID , value.categoryID , value.roomID , value.rightAnswer , vars)
-            .then(function(data){
-                console.log('player2 call completed' , new Date().toDateString);
-            })
-            .catch(function(err){
-                console.log('player2 call failed' , new Date().toDateString);
-            });
-        }
-    });
+    //         submitMultiplayerPlayerResult(value.playerID , value.categoryID , value.roomID , value.rightAnswer , vars)
+    //         .then(function(data){
+    //             console.log('Player1 data submitted' , data);
+    //             return data;
+    //         }).catch(function(err){
+    //             console.log('Player1 err' , err);
+    //         });
+            
+    //     }
+    // });
+
+    // userResultsRef2.on('value' , (snapshot) => {
+    //     console.log('player2 call');
+    //     let value = snapshot.val();
+    //     if(value)
+    //     {
+    //       submitMultiplayerPlayerResult(value.playerID , value.categoryID , value.roomID , value.rightAnswer , vars)
+    //       .then(function(data){
+    //           console.log('Player2 data submitted' , data);
+    //           return data;
+    //       }).catch(function(err){
+    //           console.log('Player2 err' , err);
+    //       });
+            
+    //     }
+    // });
     
     category.then(function(snapshot){
         
@@ -1095,7 +1101,9 @@ getQuestions(categoryID , vars)
 
         roomData['draw'] = 0;
         
-        addToRealTimeDb('rooms' , categoryID , newRoomID , roomData , vars);
+        //addToRealTimeDb('rooms' , categoryID , newRoomID , roomData , vars);
+        let ref = vars.rtdb.ref('rooms' +'/'+categoryID+'/' + newRoomID);
+                  ref.set(roomData);
     });
     
 });
@@ -1119,42 +1127,12 @@ return new Promise(function(resolve , reject){
     
     getFromRealtimeDb('rooms' , categoryID+'/'+roomID+'/' , vars)
     .then(function(response){
-        
-        submitSinglePlayerResult(
-            {
-                'userID' : playerID,
-                'correctAnswer' : rightAnswer,
-                'categoryTitle' : response.categoryTitle,
-                'categoryID' : categoryID
-            } , 
-            vars
-            )
-            .then(function(data){
-                
-                // if(response['player1'].guid == playerID)
-                // {
-                //     response['player1'] = data;
-                // }else{
-                //     response['player2'] = data;
-                // }
 
-                if(!response[playerID])
-                {
-                    
-                    let currentRound = 1;
-                    let currentPoints = parseInt(rightAnswer);
-                    
-                    response[playerID] = {'currentRound' : currentRound , 'currentPoints' : currentPoints};
-                    
-                }
-                else
-                {
-                    let currentRound = parseInt(response[playerID].currentRound) + 1;
-                    let currentPoints = parseInt(response[playerID].currentPoints) + parseInt(rightAnswer);
-                    
-                    response[playerID] = {'currentRound' : currentRound , 'currentPoints' : currentPoints};
-                    
-                }
+                
+                let currentRound = parseInt(response[playerID].currentRound) + 1;
+                let currentPoints = parseInt(response[playerID].currentPoints) + parseInt(rightAnswer);
+                
+                response[playerID] = {'currentRound' : currentRound , 'currentPoints' : currentPoints};
                 
                 let questionsAsked = response.totalQuestionsAsked ? parseInt(response.totalQuestionsAsked) + 1 : 1;
                 
@@ -1165,22 +1143,28 @@ return new Promise(function(resolve , reject){
                     endRoom(categoryID , roomID , vars);
                     response.roomState = 'ended';
                 }
-                
-                addToRealTimeDb('rooms' , categoryID , roomID , response , vars)
-                .then(function(data){
-                    resolve();
-                }).catch(function(err){
-                    reject();
-                });
-                
-            })
-            .catch(function(){
-                reject();
-            });
-            
-        });
+
+                let ref = vars.rtdb.ref('rooms' +'/'+categoryID+'/' + roomID);
+
+                submitSinglePlayerResult({
+                'userID' : playerID,
+                'correctAnswer' : rightAnswer,
+                'categoryTitle' : response.categoryTitle,
+                'categoryID' : categoryID
+                } , vars);
+
+
+                resolve(ref.set(response));
+
+                  
+
+        }).catch(function(err){
+        console.log('submitMultiplayerPlayerResult err' , err);
+    });
+    
     });
 }
+
 
 var endRoom = function(categoryID , roomID , vars)
 {
