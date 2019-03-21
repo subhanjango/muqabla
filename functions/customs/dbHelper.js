@@ -141,6 +141,8 @@ var addToRealTimeDb = function (collection, parentID, uniqueID, data, vars) {
         }
     });
 
+    });
+
 }
 
 var getFromRealtimeDb = function (collection, refID, vars) {
@@ -1540,6 +1542,8 @@ var getUserDetailsForFollowingFollowList = function (obj, checkUserType, vars) {
             .catch(function (err) {
                 reject(err);
             });
+    });
+    
     });
 }
 
