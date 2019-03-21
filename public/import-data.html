@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Muqabla Pro</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc."/>
+    <meta name="author" content="Potenza Global Solutions"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <!-- app favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <!-- plugin stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css"/>
+    <!-- app style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"/>
+</head>
+
+<body>
+<!-- begin app -->
+<div class="app">
+    <!-- begin app-wrap -->
+    <div class="app-wrap">
+        <!-- begin pre-loader -->
+        <div class="loader">
+            <div class="h-100 d-flex justify-content-center">
+                <div class="align-self-center">
+                    <img src="assets/img/loader/loader.svg" alt="loader">
+                </div>
+            </div>
+        </div>
+        <!-- end pre-loader -->
+        <!-- begin app-header -->
+        <header class="app-header top-bar">
+
+        </header>
+        <!-- end app-header -->
+        <!-- begin app-container -->
+        <div class="app-container">
+            <!-- begin app-nabar -->
+            <aside class="app-navbar">
+            </aside>
+            <!-- end app-navbar -->
+            <!-- begin app-main -->
+            <div class="app-main" id="main">
+                <!-- begin container-fluid -->
+                <div class="container-fluid">
+                    <!-- begin row -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card card-statistics">
+                                <div class="card-header">
+                                    <div class="card-heading">
+                                        <h4 class="card-title">Upload CSV File</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form id="add-form">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Upload File</label>
+                                            <input type="file" accept=".csv" required class="form-control"
+                                                   id="csv_upload">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- end container-fluid -->
+            </div>
+            <!-- begin footer -->
+
+            <!-- end footer -->
+        </div>
+        <!-- end app-wrap -->
+    </div>
+    <!-- end app -->
+
+    <!-- firebase cdn -->
+    <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
+    <!-- plugins -->
+    <script src="assets/js/vendors.js"></script>
+    <!-- firebase config -->
+    <script src="assets/js/firebaseConfig.js"></script>
+    <!-- custom app -->
+    <script src="assets/js/app.js"></script>
+    <!-- auth functions-->
+    <script src="assets/js/auth.js"></script>
+
+    <script src="assets/js/templating.js"></script>
+
+    <script src="assets/papaparse/papaparse.min.js"></script>
+
+
+    <script>
+
+        var module_name = getParameterByName('source');
+
+        function uploadMe() {
+            return new Promise(function (resolve, reject) {
+                var fileButton = document.getElementById("csv_upload");
+                var file = fileButton.files[0];
+                if (!file) {
+                    reject('Files is required');
+                }
+
+                if (file['name'].split('.').pop() != 'csv') {
+                    reject('Error! Only csv files are supported');
+                }
+
+                var json = Papa.parse(file,
+                    {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function (results) {
+
+                            let csvData = results.data;
+
+                            if (csvData.length === 0) {
+                                reject('File is empty');
+                            }
+
+                            formatData(csvData)
+                                .then(function (success) {
+                                    resolve(success);
+                                })
+                                .catch(function (err) {
+                                    reject(err);
+                                })
+                        }
+                    });
+
+            })
+        }
+
+        $('#add-form').on('submit', function (e) {
+
+            e.preventDefault();
+
+            uploadMe()
+                .then(function (data) {
+                    $.post(firebase_api_url + '/createDataFromExcel', {
+                        'module': module_name,
+                        'data': JSON.stringify(data)
+                    })
+                        .then(function (response) {
+                            alert(response.msg);
+                            redirectTo('show-' + getParameterByName('source') + '.html');
+                        })
+                }).catch(function (err) {
+                alert(err);
+                $('#add-form').trigger("reset");
+            })
+
+
+        });
+
+        function formatData(arrayData) {
+
+            return new Promise(function (resolve, reject) {
+
+                let keysToFind = [];
+                let dataToSend = [];
+                let i = 1;
+
+                switch (module_name) {
+                    case 'categories':
+                        keysToFind = [
+                            {'keyInCSV': 'Description', 'keyForApi': 'description'},
+                            {'keyInCSV': 'Featured Category', 'keyForApi': 'is_featured'},
+                            {'keyInCSV': 'Image URL', 'keyForApi': 'image_uri'},
+                            {'keyInCSV': 'Parent Category', 'keyForApi': 'parent_category'},
+                            {'keyInCSV': 'Title', 'keyForApi': 'title'},
+                            {'keyInCSV': 'Unique ID', 'keyForApi': 'guid'},
+                        ];
+
+                        for (let key in arrayData) {
+
+                            let csvData = arrayData[key];
+                            let dataTomake = {};
+                            let j = 1;
+
+                            for (let key2 in keysToFind) {
+
+                                if (!csvData[[keysToFind[key2]['keyInCSV']]]) {
+                                    reject('Invalid CSV fromat');
+                                } else {
+
+                                    if (!csvData[[keysToFind[key2]['keyInCSV']]]) {
+                                        reject('Invalid CSV fromat');
+                                    } else {
+
+                                        dataTomake[keysToFind[key2]['keyForApi']] = csvData[[keysToFind[key2]['keyInCSV']]];
+
+                                        if (j === keysToFind.length) {
+                                            dataToSend.push(dataTomake);
+                                            if (i === arrayData.length) {
+                                                resolve(dataToSend);
+                                            }
+                                            i++;
+                                        }
+
+
+                                        j++;
+
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                        break;
+
+                    case 'questions':
+                        keysToFind = [
+                            {'keyInCSV': 'Category', 'keyForApi': 'category_id'},
+                            {'keyInCSV': 'Category', 'keyForApi': 'category'},
+                            {'keyInCSV': 'Question', 'keyForApi': 'question'},
+                            {'keyInCSV': 'Correct Option', 'keyForApi': 'option'},
+                            {'keyInCSV': 'Wrong1', 'keyForApi': 'option'},
+                            {'keyInCSV': 'Wrong2', 'keyForApi': 'option'},
+                            {'keyInCSV': 'Wrong3', 'keyForApi': 'option'},
+                        ];
+
+                        for (let key in arrayData) {
+
+                            let csvData = arrayData[key];
+                            let dataTomake = {};
+                            let optionsArray = [];
+                            let j = 1;
+
+                            for (let key2 in keysToFind) {
+
+                                if (!csvData[[keysToFind[key2]['keyInCSV']]]) {
+                                    reject('Invalid CSV fromat');
+                                } else {
+
+                                    if (keysToFind[key2]['keyInCSV'] == 'Correct Option') {
+                                        let optionData = {};
+                                        optionData.option = csvData[[keysToFind[key2]['keyInCSV']]];
+                                        optionData.is_correct = true;
+                                        optionsArray.push(optionData);
+                                    } else if (keysToFind[key2]['keyInCSV'] == 'Wrong1' || keysToFind[key2]['keyInCSV'] == 'Wrong2' || keysToFind[key2]['keyInCSV'] == 'Wrong3') {
+                                        let optionData = {};
+                                        optionData.option = csvData[[keysToFind[key2]['keyInCSV']]];
+                                        optionData.is_correct = false;
+                                        optionsArray.push(optionData);
+                                    } else {
+                                        dataTomake[keysToFind[key2]['keyForApi']] = csvData[[keysToFind[key2]['keyInCSV']]];
+                                    }
+
+
+                                    if (j === keysToFind.length) {
+                                        dataTomake.options = JSON.stringify(optionsArray);
+                                        dataToSend.push(dataTomake);
+                                        if (i === arrayData.length) {
+                                            resolve(dataToSend);
+                                        }
+                                        i++;
+                                    }
+
+
+                                    j++;
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                        break;
+
+                    default:
+                        redirectTo('index.html');
+                        reject('Bad source');
+                        break;
+                }
+
+            });
+
+        }
+    </script>
+</body>
+
+</html>

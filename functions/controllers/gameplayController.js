@@ -287,8 +287,11 @@ exports.endRoom = function(req , res)
     customHelpers.validatePostRequest(requestedParams , req)
     //if validation is successful 
     .then(function(){
+        
+        let forceWin = req.body.forceWin ? req.body.forceWin : false;
+        
         //call db function to add to data to db
-        dbHelper.endRoom(req.body.categoryID , req.body.roomID , vars)
+        dbHelper.endRoom(req.body.categoryID , req.body.roomID , vars , forceWin)
         .then(function() {
              customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.updated , req.body) , res );
         }).catch(function(err) {
@@ -329,19 +332,78 @@ customHelpers.validatePostRequest(requestedParams , req)
 });
 }
 
-exports.testing = function(req , res)
+exports.challenge = function(req, res)
 {
-    let data = {
-        playerID : '18c2ed73-a06b-4c52-a8dc-355a70e7cde0' ,
-        categoryID : '05299b8f-84fe-4441-8d34-934f704faa3b',
-        roomID : req.body.room ,
-        rightAnswer : 1
-    }
+    //get params requested for this http request
+    let requestedParams = vars.dataColumns.getColumnNames('challenge');
+    //validate params
+    customHelpers.validatePostRequest(requestedParams , req)
+    //if validation is successful 
+    .then(function(){
+    //call db function to add to data to db
+    dbHelper.challenge(req.body.challenger , req.body.challenged , req.body.categoryID , vars)
+    .then(function() {
+            customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+    }).catch(function(err) {
+        console.log(err);
 
-    dbHelper.addToRealTimeDb('userResults' , req.body.room , '18c2ed73-a06b-4c52-a8dc-355a70e7cde0' , data , vars);
+        //Opps ! There was an error while adding data - send error msg
+            customHelpers.sendErrorResponse(err , res );
+    });
+    })
+    .catch(function(){
+    //requested params are not enough to add data
+    customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+    });   
+}
 
-    customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+exports.rejectChallenge = function(req , res)
+{
+        //get params requested for this http request
+        let requestedParams = vars.dataColumns.getColumnNames('rejectChallenge');
+        //validate params
+        customHelpers.validatePostRequest(requestedParams , req)
+        //if validation is successful 
+        .then(function(){
+        //call db function to add to data to db
+        dbHelper.rejectChallenge(req.body.challengeID , vars)
+        .then(function() {
+                customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.deleted , req.body) , res );
+        }).catch(function(err) {
+            console.log(err);
+    
+            //Opps ! There was an error while adding data - send error msg
+                customHelpers.sendErrorResponse(err , res );
+        });
+        })
+        .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+        });
+}
 
-
+exports.acceptChallenge = function(req , res)
+{
+        //get params requested for this http request
+        let requestedParams = vars.dataColumns.getColumnNames('acceptChallenge');
+        //validate params
+        customHelpers.validatePostRequest(requestedParams , req)
+        //if validation is successful 
+        .then(function(){
+        //call db function to add to data to db
+        dbHelper.acceptChallenge(req.body.challengeID , vars)
+        .then(function() {
+                customHelpers.sendSuccessResponse(customHelpers.createMsgForClient(vars.successMsg.added , req.body) , res );
+        }).catch(function(err) {
+            console.log(err);
+    
+            //Opps ! There was an error while adding data - send error msg
+                customHelpers.sendErrorResponse(err , res );
+        });
+        })
+        .catch(function(){
+        //requested params are not enough to add data
+        customHelpers.sendErrorResponse(customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , requestedParams) , res);
+        });
 }
 

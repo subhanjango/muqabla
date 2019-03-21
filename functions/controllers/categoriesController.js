@@ -112,25 +112,22 @@ exports.delete = function(req , res)
 {
 //get required params for this request -- overwrite the above requestedParams variable
 let requestedParams = vars.dataColumns.getColumnNames('delete');    
+
 //validate request with the required params
 customHelpers.validatePostRequest(requestedParams , req)
 .then(function(){   
-
+    console.log('here');
 //call db function to delete data from db
-dbHelper.deleteFromDb(collectionName , req.body.ref_id , vars)
-.then(function() {
+dbHelper.deleteFromDb(collectionName , req.body.ref_id , vars);
 //data has been deleted - send success msg
 customHelpers.sendSuccessResponse(
     customHelpers.createMsgForClient(vars.successMsg.deleted , req.body) , 
     res 
     );
-}).catch(function(err) {
-    //Opps ! There was an error while deleting data - send error msg
-    customHelpers.sendErrorResponse(err , res);
-}); 
 
 })
 .catch(function(err){
+    console.log('here4',err);
 //requested params are not enough to delete data
 customHelpers.sendErrorResponse(
     customHelpers.createMsgForClient(vars.errorMsgs.requestedParams , err) 

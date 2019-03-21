@@ -6,6 +6,7 @@ firebase = require("firebase-admin"),
 fileUpload = require('express-fileupload'),
 multer = require('multer'),
 MockExpressRequest = require('mock-express-request'),
+cors = require('cors');
 
 successMsg = {
   'dataRetrieved' : 'Retrieval done',
@@ -29,6 +30,11 @@ notifications = {
   'followUser' : {
     'title' : 'You just got followed',
     'body' : '<b>[USER_NAME]</b> is now <b>following</b> you',
+    'replacer' : '[USER_NAME]'
+  },
+  'challengeUser' : {
+    'title' : 'You just received a challenge',
+    'body' : '<b>[USER_NAME]</b> challenged you',
     'replacer' : '[USER_NAME]'
   }
 }
@@ -55,7 +61,8 @@ app.use(function(req, res , next){
   res.header("Content-Type" , "application/json");
   next();
 });
-
+//enables cors
+app.use(cors());
 app.use(fileUpload());
 
 exports.express = express;

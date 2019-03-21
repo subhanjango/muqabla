@@ -192,6 +192,31 @@ exports.readCSVdata = function(filePath)
     });
 }
 
+
+exports.readCSVFromRemoteSource = function(filePath) {
+    const request=require('request')
+    const csv=require('csvtojson')
+
+    return new Promise(function (res , rej) {
+
+        csv()
+            .fromStream(request.get(filePath))
+            .subscribe((json)=>{
+                console.log(json);
+                return new Promise((resolve,reject)=>{
+                    console.log(json);
+                    resolve(json)
+                })
+            },function (err) {
+                rej(err);
+            },function (json) {
+                res(json);
+            });
+    })
+
+
+}
+
 exports.externalHit = function(url , isPost , data)
 {
     var request = require('request');

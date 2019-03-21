@@ -8,6 +8,7 @@ const users_controller = require('./controllers/usersController.js');
 const categories_controller = require('./controllers/categoriesController.js');
 const follow_category_controller = require('./controllers/followCategoryController.js');
 const follow_user_controller = require('./controllers/followUserController.js');
+const excel_sheet_controller = require('./controllers/excelSheetController.js');
 
 var crudModules = [
     { 'module_name': 'Gameplay', 'controller': gameplay_controller },
@@ -34,6 +35,10 @@ vars.app.post('/submitSinglePlayerResult' , gameplay_controller.submitSinglePlay
 vars.app.post('/search' , gameplay_controller.search);
 vars.app.post('/submitMultiplayerPlayerResult' , gameplay_controller.submitMultiplayerPlayerResult);
 vars.app.post('/endRoom' , gameplay_controller.endRoom);
+vars.app.post('/challenge' , gameplay_controller.challenge);
+vars.app.post('/acceptChallenge' , gameplay_controller.acceptChallenge);
+vars.app.post('/rejectChallenge' , gameplay_controller.rejectChallenge);
+vars.app.get('/leaderboard' , gameplay_controller.leaderboard);
 
 vars.app.get('/getQuestionsForGame' , questions_controller.getQuestions);
 
@@ -42,17 +47,20 @@ vars.app.get('/followCategoryByUser' , follow_category_controller.followCategory
 vars.app.get('/getAllCategories' , categories_controller.getAllCategories);
 vars.app.get('/categoryDetails' , categories_controller.categoryDetails);
 
-vars.app.get('/leaderboard' , gameplay_controller.leaderboard);
-
 vars.app.post('/removeFollowUser' , follow_user_controller.removeFollowUser);
+vars.app.get('/getFollowFollowingUsers' , follow_user_controller.getFollowFollowingUsers);
 
-vars.app.post('/checkRTDB' , gameplay_controller.testing);
+vars.app.post('/createDataFromExcel' , excel_sheet_controller.createDataFromExcelSheets);
+
+
+vars.app.post('/customNotificationToUsers' , users_controller.sendCustomNotificationsToUsers);
+
+
 
 //listener for user registration
 exports.userLogger = vars.functions.auth.user().onCreate((user) => {
     users_controller.create(user);
 });
-
 
 
 exports.api = vars.functions.https.onRequest(vars.app);

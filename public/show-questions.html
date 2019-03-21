@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Muqabla Pro</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc." />
+    <meta name="author" content="Potenza Global Solutions" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- app favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <!-- plugin stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
+    <!-- app style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+</head>
+
+<body>
+    <!-- begin app -->
+    <div class="app">
+        <!-- begin app-wrap -->
+        <div class="app-wrap">
+            <!-- begin pre-loader -->
+            <div class="loader">
+                <div class="h-100 d-flex justify-content-center">
+                    <div class="align-self-center">
+                        <img src="assets/img/loader/loader.svg" alt="loader">
+                    </div>
+                </div>
+            </div>
+            <!-- end pre-loader -->
+            <!-- begin app-header -->
+            <header class="app-header top-bar">
+                
+            </header>
+            <!-- end app-header -->
+            <!-- begin app-container -->
+            <div class="app-container">
+                <!-- begin app-nabar -->
+                <aside class="app-navbar">
+                </aside>
+                <!-- end app-navbar -->
+                <!-- begin app-main -->
+                <div class="app-main" id="main">
+                </div>
+                <!-- begin footer -->
+                
+                <!-- end footer -->
+            </div>
+            <!-- end app-wrap -->
+        </div>
+        <!-- end app -->
+        
+        <!-- firebase cdn -->
+        <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
+        <!-- plugins -->
+        <script src="assets/js/vendors.js"></script>
+        <!-- firebase config -->
+        <script src="assets/js/firebaseConfig.js"></script>
+        <!-- custom app -->
+        <script src="assets/js/app.js"></script>
+        <!-- auth functions-->
+        <script src="assets/js/auth.js"></script>
+        
+        <script src="assets/js/templating.js"></script>
+        
+        <script>
+            
+            $('.app-main').load('includes/datatable.html');
+            
+            $(function(){
+                
+                var ajax_url = firebase_api_url+"/getQuestions"; 
+                
+                var columnsToFind = ["guid","question","category","created_at"];
+                
+                var tableTitle = '<h1>Questions</h1>';
+                
+                var canAdd = true;
+                var canImport = true;
+                var moduleName = 'questions';
+                var sampleExcelSheet = 'assets/samples/add-questions.csv';
+
+                var dataColumns = [
+                { title : "Unique ID"},
+                { title : "Question" },
+                { title : "Category" },
+                { title : "Created At" },
+                { title : "Options" }
+                ];
+                
+                var options = [
+                {'action' : 'edit', 'callingFunc' : 'takeMeToUpdate(this)'},
+                {'action' : 'delete', 'callingFunc' : 'deleteMe(this)'},
+                {'action' : 'view', 'callingFunc' : 'takeMeToView(this)'},
+                ];
+                
+                var dataTable = $(".datatable-wrapper");
+                
+                if (dataTable.length > 0) {
+                    
+                    getDataForDataTable(ajax_url , columnsToFind , options)
+                    .then(function(dataTableData){
+                        
+                        var tableWithData = $('#datatable').DataTable(  {
+                            data: dataTableData,
+                            columns: dataColumns,
+                            order: [[ 3, "ASC" ]]
+                        });
+                        
+                        $('.page-title').html(tableTitle);
+                        
+                        if(canAdd) {
+                            $('.breadcrumb').css('display','block');
+                        }
+
+                        if(!canImport) {
+                            $('.import-button').remove();
+                            $('.import-sample').remove();
+                        } else {
+                            $('.import-button').attr('href' , 'import-data.html?source='+moduleName);
+                            $('.import-sample').attr('href' , sampleExcelSheet);
+                        }
+                        
+                        $('#datatable').on('click', 'tbody tr', function() {
+                            createCookie('thisID', tableWithData.row(this).data()[0] , 1);
+                        });
+                    })
+                    .catch(function(err){
+                        console.log('err',err);
+                    });
+                    
+                } else {
+                    location.reload();
+                }
+                
+                
+            });
+            
+            
+            
+            
+            
+            function takeMeToAdd() {
+                    redirectTo('add-question.html');
+            }
+            
+            function takeMeToUpdate() {
+                redirectTo('update-question.html');
+            }
+            
+            function deleteMe() {
+                var result = confirm("Are you sure you want to delete?");
+                if (result) {
+                    let ref_url = getCurrentPageName();
+                    
+                    redirectTo('delete.html?subject=question&ref_url='+ref_url);
+                    
+                }
+            }
+            
+            function takeMeToView() {
+                redirectTo('view.html?subject=question');
+            }
+            
+            if(getParameterByName('alert')) {
+                switch(getParameterByName('alert')) {
+                    case 'DEL_DONE':
+                    alert('Data has been deleted');
+                    break;
+
+                    case 'ADD_DONE':
+                    alert('Data has been added');
+                    break;
+
+                    case 'UPDT_DONE':
+                    alert('Data has been added');
+                    break;
+                    
+                }
+            }
+        </script>
+    </body>
+    
+    </html>

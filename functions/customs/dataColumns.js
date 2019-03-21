@@ -139,6 +139,41 @@ exports.getColumnNames = function (collection)
             {'param' : 'rightAnswer' , 'description' : '1 if yes , 0 if no' , 'data_type': 'string'  , 'required' : true},
         ];
         break;
+        case 'challenge':
+        return [
+            {'param' : 'challenger' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'challenged' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'categoryID' , 'description' : 'category id that has been selected' , 'data_type': 'string'  , 'required' : true},
+        ]
+        break;
+        case 'rejectChallenge':
+        return [
+            {'param' : 'challengeID' , 'description' : 'challenge guid' , 'data_type': 'string'  , 'required' : true},
+        ]
+        break;
+        case 'acceptChallenge':
+        return [
+            {'param' : 'challengeID' , 'description' : 'challenge guid' , 'data_type': 'string'  , 'required' : true},
+        ]
+        break;
+        case 'getFollowFollowingUsers':
+        return [
+            {'param' : 'type' , 'description' : 'following | followers' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'user_id' , 'description' : 'user guid' , 'data_type': 'string'  , 'required' : true},
+        ]
+        break;
+        case 'data-from-excel-sheets':
+        return [
+            {'param' : 'module' , 'description' : 'module name' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'data' , 'description' : 'array of objects' , 'data_type': 'array'  , 'required' : true},
+        ]
+        break;
+        case 'sendCustomNotificationsToUsers':
+        return [
+            {'param' : 'title' , 'description' : 'title of the notificaiton' , 'data_type': 'string'  , 'required' : true},
+            {'param' : 'msg' , 'description' : 'body of the notification' , 'data_type': 'string'  , 'required' : true},
+        ]
+        break;
     
     }
 }

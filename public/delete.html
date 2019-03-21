@@ -1,0 +1,46 @@
+<!-- firebase cdn -->
+<script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
+<!-- plugins -->
+<script src="assets/js/vendors.js"></script>
+<!-- firebase config -->
+<script src="assets/js/firebaseConfig.js"></script>
+<!-- custom app -->
+<script src="assets/js/app.js"></script>
+<!-- auth functions-->
+<script src="assets/js/auth.js"></script>
+
+<script src="assets/js/templating.js"></script>
+
+<script>
+
+    let subject = getParameterByName('subject');
+    let getBackToURL = getParameterByName('ref_url');
+    if(!subject) {
+        redirectTo('index.html');
+    }
+
+    let apiURL , currID;
+
+    switch(subject) {
+        case 'category':
+        currID = readCookie('thisID');
+        apiURL = '/deleteCategories'
+        break;
+
+        case 'question':
+        currID = readCookie('thisID');
+        apiURL = '/deleteQuestions'
+        break;
+
+        default :
+        break;
+    }
+
+    let ajax_url = firebase_api_url+apiURL; 
+    
+    $.post(ajax_url , {'ref_id' : currID})
+    .then(function() {
+        redirectTo(getBackToURL+'?alert=DEL_DONE');
+    });
+
+</script>
