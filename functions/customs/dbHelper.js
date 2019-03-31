@@ -141,7 +141,6 @@ var addToRealTimeDb = function (collection, parentID, uniqueID, data, vars) {
         }
     });
 
-    });
 
 }
 
@@ -175,18 +174,18 @@ var getQuestions = function (categoryID, vars) {
                 return documentSnapshot.data();
             });
 
-
-            if (dataRecieved.length <= vars.questionPerRound) {
+            if(dataRecieved.length === 0) {
                 resolve(dataRecieved);
+                return;
             }
 
             makeRandomQuestions(dataRecieved, vars.questionPerRound)
-                .then(function (questions) {
-                    resolve(questions);
-                })
-                .catch(function (err) {
-                    reject(err);
-                })
+            .then(function (questions) {
+                resolve(questions);
+            })
+            .catch(function (err) {
+                reject(err);
+            });
 
 
         }).catch(function (err) {
@@ -202,10 +201,19 @@ var makeRandomQuestions = function (questions, questionsCount) {
         let questionsArr = [];
         let questionsUniqueRecord = [];
 
+        if(questions.length <= questionsCount) {
+            questionsCount = questions.length;
+        }
+
         while (questionsArr.length != questionsCount) {
             let currQuestion = questions[Math.floor(Math.random() * questions.length)];
 
             if (questionsUniqueRecord.indexOf(currQuestion.guid) == -1) {
+
+                let optionsArray = JSON.parse(currQuestion.options);
+
+                currQuestion.options = JSON.stringify(customHelper.shuffle(optionsArray));
+                
                 questionsUniqueRecord.push(currQuestion.guid);
 
                 questionsArr.push(currQuestion);
@@ -492,15 +500,15 @@ var submitSinglePlayerResult = function (request, vars) {
                 dataRecieved.nextLevelRequirement = 100;
             }
 
-            if (request.correctAnswer && request.correctAnswer == 1) {
+            if (request.correctAnswer && request.correctAnswer == '1') {
                 dataRecieved.current_points = dataRecieved.current_points ? parseInt(dataRecieved.current_points) + 10 : 10;
             }
 
-            if (request.allCorrectAnswer && request.allCorrectAnswer == 1) {
+            if (request.allCorrectAnswer && request.allCorrectAnswer == '1') {
                 dataRecieved.current_points = dataRecieved.current_points ? parseInt(dataRecieved.current_points) + 20 : 20;
             }
 
-            if (request.win && request.win == 1) {
+            if (request.win && request.win == '1') {
                 dataRecieved.games_won = dataRecieved.games_won ? parseInt(dataRecieved.games_won) + 1 : 1;
 
                 let alreadyWonCategories = dataRecieved.won_categories ? dataRecieved.won_categories : {};
@@ -530,16 +538,16 @@ var submitSinglePlayerResult = function (request, vars) {
 
             }
 
-            if (request.draw && request.draw == 1) {
+            if (request.draw && request.draw == '1') {
                 dataRecieved.games_draw = dataRecieved.games_draw ? parseInt(dataRecieved.games_draw) + 1 : 1;
 
             }
 
-            if (request.losed && request.losed == 1) {
+            if (request.losed && request.losed == '1') {
                 dataRecieved.games_losed = dataRecieved.games_losed ? parseInt(dataRecieved.games_losed) + 1 : 1;
             }
 
-            if (request.win == 1 || request.losed == 1 || request.draw == 1) {
+            if (request.win == '1' || request.losed == '1'|| request.draw == '1') {
 
                 let alreadyPlayedCategories = dataRecieved.played_categories ? dataRecieved.played_categories : {};
 
@@ -547,6 +555,9 @@ var submitSinglePlayerResult = function (request, vars) {
                     'title': request.categoryTitle,
                     'categoryId': categoryID
                 };
+
+
+                addToRealTimeDb('gamesPlayed', categoryID, generateUUID(), new Date().getTime(), vars);
 
                 dataRecieved.played_categories = alreadyPlayedCategories;
 
@@ -748,7 +759,7 @@ var removeFollowUser = function (request, vars) {
                     let senderDataToUpdate = {'following_count': senderData[0].following_count ? parseInt(senderData[0].following_count) - 1 : 0};
 
                     chunkUpdate('users', request.follower_user_id, senderDataToUpdate, vars);
-                    console.log();
+                    
                     let recieverDataToUpdate = {'follower_count': recieverData[0].follower_count ? parseInt(recieverData[0].follower_count) - 1 : 0};
 
                     chunkUpdate('users', request.following_user_id, recieverDataToUpdate, vars);
@@ -1348,8 +1359,6 @@ var endRoom = function (categoryID, roomID, vars, forceWin = false) {
 
                         addToRealTimeDb('history', response['player2'].guid, roomID, response, vars);
 
-                        addToRealTimeDb('gamesPlayed', categoryID, roomID, new Date().getTime(), vars);
-
                         resolve();
 
                     });
@@ -1544,13 +1553,11 @@ var getUserDetailsForFollowingFollowList = function (obj, checkUserType, vars) {
             });
     });
     
-    });
 }
 
 var insertArrayOfObjects = function (arrayOfObjects, moduleName, vars) {
     let i = 1;
 
-    console.log('arrayOfObjects' , arrayOfObjects);
     return new Promise(function (resolve, reject) {
 
         for (let key in arrayOfObjects) {
@@ -1588,7 +1595,6 @@ var sendCustomNotificationsToUsers = function(title , body , vars) {
             resolve();
         }
 
-        console.log(snapshot);
         snapshot['docs'].forEach(function(element) {
 
             let user = element.data();

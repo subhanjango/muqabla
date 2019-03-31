@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Muqabla Pro</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc."/>
+    <meta name="author" content="Potenza Global Solutions"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <!-- app favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <!-- plugin stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css"/>
+    <!-- app style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"/>
+</head>
+<style>
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+</style>
+
+<body>
+<!-- begin app -->
+<div class="app">
+    <!-- begin app-wrap -->
+    <div class="app-wrap">
+        <!-- begin pre-loader -->
+        <div class="loader">
+            <div class="h-100 d-flex justify-content-center">
+                <div class="align-self-center">
+                    <img src="assets/img/loader/loader.svg" alt="loader">
+                </div>
+            </div>
+        </div>
+        <!-- end pre-loader -->
+        <!-- begin app-header -->
+        <header class="app-header top-bar">
+
+        </header>
+        <!-- end app-header -->
+        <!-- begin app-container -->
+        <div class="app-container">
+            <!-- begin app-nabar -->
+            <aside class="app-navbar">
+            </aside>
+            <!-- end app-navbar -->
+            <!-- begin app-main -->
+            <div class="app-main" id="main">
+                <!-- begin container-fluid -->
+                <div class="container-fluid">
+                    <!-- begin row -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card card-statistics">
+                                <div class="card-body">
+                                    <div class="col-12 col-lg-12">
+                                        <div class="card card-statistics">
+                                            <div class="card-header">
+                                                <div class="card-heading">
+                                                    <h4 class="card-title">Table Head Light</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table mb-0">
+                                                        <thead class="thead-light">
+                                                            <tr>
+                                                                <th scope="col" style="text-align: center;">#</th>
+                                                                <th style="text-align: center;" scope="col">Name</th>
+                                                                <th style="text-align: center;" scope="col">Avatar</th>
+                                                                <th style="text-align: center;" scope="col">Email</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="standings">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- end container-fluid -->
+            </div>
+            <!-- begin footer -->
+
+            <!-- end footer -->
+        </div>
+        <!-- end app-wrap -->
+    </div>
+    <!-- end app -->
+
+    <!-- firebase cdn -->
+    <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
+    <!-- plugins -->
+    <script src="assets/js/vendors.js"></script>
+    <!-- firebase config -->
+    <script src="assets/js/firebaseConfig.js"></script>
+    <!-- custom app -->
+    <script src="assets/js/app.js"></script>
+    <!-- auth functions-->
+    <script src="assets/js/auth.js"></script>
+
+    <script src="assets/js/templating.js"></script>
+
+    <script>
+
+
+        $(function () {
+
+            let get_standings = firebase_api_url + "/leaderboard?categoryID="+readCookie('thisID');
+            
+            $('.card-title').text(readCookie('catName'));
+
+            $.get(get_standings)
+                .then(function (data) {
+
+                    let response = data['data'];
+                    let postion = 1;
+                    response.forEach((element) => {
+                        $('#standings').append('<tr><th scope="row">'+postion+'</th><td>'+element.first_name+'</td><td><img class="text-center" src="'+element.image_url+'" style="width:50px;height:50px"></td><td>'+element.email+'</td></tr>');
+                        postion++;
+                    });
+
+
+                });
+        });
+
+    </script>
+</body>
+
+</html>
