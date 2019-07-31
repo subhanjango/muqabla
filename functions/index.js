@@ -8,7 +8,7 @@ const users_controller = require('./controllers/usersController.js');
 const categories_controller = require('./controllers/categoriesController.js');
 const follow_category_controller = require('./controllers/followCategoryController.js');
 const follow_user_controller = require('./controllers/followUserController.js');
-const excel_sheet_controller = require('./controllers/excelSheetController.js');
+const custom_controller = require('./controllers/customController.js');
 
 var crudModules = [
     { 'module_name': 'Gameplay', 'controller': gameplay_controller },
@@ -50,10 +50,10 @@ vars.app.get('/categoryDetails' , categories_controller.categoryDetails);
 vars.app.post('/removeFollowUser' , follow_user_controller.removeFollowUser);
 vars.app.get('/getFollowFollowingUsers' , follow_user_controller.getFollowFollowingUsers);
 
-vars.app.post('/createDataFromExcel' , excel_sheet_controller.createDataFromExcelSheets);
-
-
 vars.app.post('/customNotificationToUsers' , users_controller.sendCustomNotificationsToUsers);
+
+vars.app.post('/createDataFromExcel' , custom_controller.createDataFromExcelSheets);
+vars.app.get('/getAppStatus' , custom_controller.showAppStatus);
 
 
 

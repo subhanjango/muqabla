@@ -3,7 +3,8 @@
 <head>
     <title>Muqabla Pro</title>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc."/>
     <meta name="author" content="Potenza Global Solutions"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -81,7 +82,9 @@
     <!-- end app -->
 
     <!-- firebase cdn -->
-    <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
     <!-- plugins -->
     <script src="assets/js/vendors.js"></script>
     <!-- firebase config -->
@@ -98,6 +101,7 @@
 
     <script>
         var module_name = getParameterByName('source');
+
         function uploadMe() {
             return new Promise(function (resolve, reject) {
                 var fileButton = document.getElementById("csv_upload");
@@ -112,6 +116,7 @@
                     {
                         header: true,
                         skipEmptyLines: true,
+                        encoding: "UTF-8",
                         complete: function (results) {
                             let csvData = results.data;
                             if (csvData.length === 0) {
@@ -128,6 +133,7 @@
                     });
             })
         }
+
         $('#add-form').on('submit', function (e) {
             e.preventDefault();
             uploadMe()
@@ -145,6 +151,7 @@
                 $('#add-form').trigger("reset");
             })
         });
+
         function formatData(arrayData) {
             return new Promise(function (resolve, reject) {
                 let keysToFind = [];
@@ -168,19 +175,15 @@
                                 if (!csvData[[keysToFind[key2]['keyInCSV']]]) {
                                     reject('Invalid CSV fromat');
                                 } else {
-                                    if (!csvData[[keysToFind[key2]['keyInCSV']]]) {
-                                        reject('Invalid CSV fromat');
-                                    } else {
-                                        dataTomake[keysToFind[key2]['keyForApi']] = csvData[[keysToFind[key2]['keyInCSV']]];
-                                        if (j === keysToFind.length) {
-                                            dataToSend.push(dataTomake);
-                                            if (i === arrayData.length) {
-                                                resolve(dataToSend);
-                                            }
-                                            i++;
+                                    dataTomake[keysToFind[key2]['keyForApi']] = csvData[[keysToFind[key2]['keyInCSV']]];
+                                    if (j === keysToFind.length) {
+                                        dataToSend.push(dataTomake);
+                                        if (i === arrayData.length) {
+                                            resolve(dataToSend);
                                         }
-                                        j++;
+                                        i++;
                                     }
+                                    j++;
                                 }
                             }
                         }

@@ -116,9 +116,10 @@ let requestedParams = vars.dataColumns.getColumnNames('delete');
 //validate request with the required params
 customHelpers.validatePostRequest(requestedParams , req)
 .then(function(){   
-    console.log('here');
 //call db function to delete data from db
 dbHelper.deleteFromDb(collectionName , req.body.ref_id , vars);
+
+dbHelper.cascadeQuestionsOnCategory(req.body.ref_id , vars);
 //data has been deleted - send success msg
 customHelpers.sendSuccessResponse(
     customHelpers.createMsgForClient(vars.successMsg.deleted , req.body) , 

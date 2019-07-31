@@ -3,7 +3,7 @@
 <head>
     <title>Muqabla Pro</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc." />
     <meta name="author" content="Potenza Global Solutions" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
     <!-- app style -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    
+    <link rel="stylesheet" type="text/css" href="assets/css/datatable_checkboxes.css">
 </head>
 
 <body>
@@ -54,7 +56,9 @@
         <!-- end app -->
         
         <!-- firebase cdn -->
-        <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
         <!-- plugins -->
         <script src="assets/js/vendors.js"></script>
         <!-- firebase config -->
@@ -66,6 +70,8 @@
         
         <script src="assets/js/templating.js"></script>
         
+        <script src="assets/js/datatable_checkboxes.min.js"></script>
+        
         <script>
             
             $('.app-main').load('includes/datatable.html');
@@ -74,17 +80,19 @@
                 
                 var ajax_url = firebase_api_url+"/getCategories"; 
                 
-                var columnsToFind = ["guid","title","parent_category","created_at"];
+                var columnsToFind = ["guid","guid","title","parent_category","created_at"];
                 
                 var tableTitle = '<h1>Categories</h1>';
                 
                 var canAdd = true;
                 var canImport = true;
+                var canMultiDelete = true;
                 var moduleName = 'categories';
                 var sampleExcelSheet = 'assets/samples/add-categories.csv'
-
+                
                 var dataColumns = [
                 { title : "Unique ID"},
+                { title : "ID"},
                 { title : "Title" },
                 { title : "Parent Category" },
                 { title : "Created At" },
@@ -106,6 +114,17 @@
                         
                         var tableWithData = $('#datatable').DataTable(  {
                             data: dataTableData,
+                            'columnDefs': [
+                            {
+                                'targets': 0,
+                                'checkboxes': {
+                                    'selectRow': true
+                                }
+                            }
+                            ],
+                            'select': {
+                                'style': 'multi'
+                            },
                             columns: dataColumns,
                             order: [[ 3, "ASC" ]]
                         });
@@ -115,7 +134,42 @@
                         if(canAdd) {
                             $('.breadcrumb').css('display','block');
                         }
-
+                        
+                        if(canMultiDelete) {
+                            $('.multidelete').css('display',"inline-block");
+                            $('.dt-checkboxes-select-all').find('input').remove();
+                            $('.multidelete').click(function(){
+                                var rows_selected = tableWithData.column(0).checkboxes.selected();
+                                
+                                if(rows_selected.length === 0) {
+                                    alert('Please select a row first');
+                                } else {
+                                    
+                                    var result = confirm("Are you sure you want to delete?");
+                                    
+                                    if (result) {
+                                        
+                                        // Iterate over all selected checkboxes
+                                        $.each(rows_selected, function(index, rowId){
+                                            let ajax_url = firebase_api_url+'/deleteCategories';
+                                            
+                                            $.post(ajax_url , {'ref_id' : rowId})
+                                            .then(() => {
+                                                tableWithData
+                                                .rows( function ( idx, data, node ) {
+                                                    return data[0] === rowId;
+                                                } )
+                                                .remove()
+                                                .draw(false);
+                                            });
+                                        });
+                                        
+                                    }
+                                }
+                                
+                            });
+                        }
+                        
                         if(!canImport) {
                             $('.import-button').remove();
                             $('.import-sample').remove();
@@ -123,46 +177,47 @@
                             $('.import-button').attr('href' , 'import-data.html?source='+moduleName);
                             $('.import-sample').attr('href' , sampleExcelSheet);
                         }
-
-
+                        
+                        
                         
                         $('#datatable').on('click', 'tbody tr', function() {
                             createCookie('thisID', tableWithData.row(this).data()[0] , 1);
                         });
-
-
-
+                        
+                        
+                        
                         tableWithData.rows( function ( idx, data, node ) {
-
+                            
                             getParentName(data , tableWithData)
-                                .then(function (dataFinal) {
-
-                                    tableWithData
-                                        .row( node )
-                                        .data( dataFinal )
-                                        .draw();
-                                });
-
+                            .then(function (dataFinal) {
+                                
+                                tableWithData
+                                .row( node )
+                                .data( dataFinal )
+                                .draw();
+                            });
+                            
                         });
-
+                        
                         function getParentName(data , tableRef) {
-
+                            
                             return new Promise(function (resolve , reject) {
-
-                                if(data[2] != '0') {
+                                
+                                if(data[3] != '0') {
                                     tableRef.rows(function (idx , data2 , node) {
-                                        if(data2[0] === data[2]) {
-                                            data[2] = data2[1];
+                                        if(data2[0] === data[3]) {
+                                            data[3] = data2[2];
                                             resolve(data);
                                         }
                                     });
                                 } else {
-                                    data[2] = 'No parent assigned';
+                                    data[3] = 'No parent assigned';
                                     resolve(data);
                                 }
-
+                                
                             })
                         }
+                        
                     })
                     .catch(function(err){
                         console.log('err',err);
@@ -174,12 +229,12 @@
                 
                 
             });
-
+            
             
             
             
             function takeMeToAdd() {
-                    redirectTo('add-category.html');
+                redirectTo('add-category.html');
             }
             
             function takeMeToUpdate() {
@@ -205,21 +260,25 @@
                     case 'DEL_DONE':
                     alert('Data has been deleted');
                     break;
-
+                    
                     case 'ADD_DONE':
                     alert('Data has been added');
                     break;
-
+                    
                     case 'UPDT_DONE':
                     alert('Data has been added');
                     break;
                     
                 }
             }
-
+            
             function importData(elm) {
                 console.log($(elm).data('module'));
             }
+            
+            
+            
+            
         </script>
     </body>
     

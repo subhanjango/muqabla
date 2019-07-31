@@ -10,10 +10,10 @@ var uploadFileOnRemoteServer = function (file, vars) {
         function (resolve, reject) {
             var uploadTask = vars.storage.child('wordPlayList/' + file.name).put(file);
 
-            // Listen for state changes, errors, and completion of the upload.
+// Listen for state changes, errors, and completion of the upload.
             uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
                 function (snapshot) {
-                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log('Upload is ' + progress + '% done');
                     switch (snapshot.state) {
@@ -26,25 +26,25 @@ var uploadFileOnRemoteServer = function (file, vars) {
                     }
                 }, function (error) {
 
-                    // A full list of error codes is available at
-                    // https://firebase.google.com/docs/storage/web/handle-errors
+// A full list of error codes is available at
+// https://firebase.google.com/docs/storage/web/handle-errors
                     switch (error.code) {
                         case 'storage/unauthorized':
                             error = vars.errMsg.UnauthorizedUser;
                             break;
 
                         case 'storage/canceled':
-                            // User canceled the upload
+// User canceled the upload
                             error = vars.errMsg.UploadCancelled;
                             break;
 
                         case 'storage/unknown':
-                            // Unknown error occurred, inspect error.serverResponse
+// Unknown error occurred, inspect error.serverResponse
                             error = vars.errorMsgs.ServerError;
                             break;
                     }
                 }, function () {
-                    // Upload completed successfully, now we can get the download URL
+// Upload completed successfully, now we can get the download URL
                     uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                         success = downloadURL;
                     });
@@ -70,7 +70,7 @@ var addToDb = function (collection, uniqueID, data, vars) {
         vars.db.collection(collection).doc(uniqueID).set(data).then((response) => {
             resolve(response);
         }).catch((err) => {
-            console.log('add data',err);
+            console.log('add data', err);
             reject(vars.errorMsgs.adderror);
         });
 
@@ -117,7 +117,10 @@ var chunkUpdate = function (collectionName, refID, request, vars) {
 
 
 var alreadyExist = function (collection, column, dataToCheck, vars) {
-    return vars.db.collection(collection).where(column, '==', dataToCheck).get();
+    return vars.db.collection(collection)
+    .where(column, '==', dataToCheck)
+    .where('deleted_at', '==', null)
+    .get();
 }
 
 
@@ -165,6 +168,7 @@ var getQuestions = function (categoryID, vars) {
 
         queryRef = vars.db.collection('questions')
             .where("category", "==", categoryID)
+            .where('deleted_at', '==', null)
             .get();
 
         queryRef.then(function (snapshot) {
@@ -174,18 +178,18 @@ var getQuestions = function (categoryID, vars) {
                 return documentSnapshot.data();
             });
 
-            if(dataRecieved.length === 0) {
+            if (dataRecieved.length === 0) {
                 resolve(dataRecieved);
                 return;
             }
 
             makeRandomQuestions(dataRecieved, vars.questionPerRound)
-            .then(function (questions) {
-                resolve(questions);
-            })
-            .catch(function (err) {
-                reject(err);
-            });
+                .then(function (questions) {
+                    resolve(questions);
+                })
+                .catch(function (err) {
+                    reject(err);
+                });
 
 
         }).catch(function (err) {
@@ -201,7 +205,7 @@ var makeRandomQuestions = function (questions, questionsCount) {
         let questionsArr = [];
         let questionsUniqueRecord = [];
 
-        if(questions.length <= questionsCount) {
+        if (questions.length <= questionsCount) {
             questionsCount = questions.length;
         }
 
@@ -213,7 +217,7 @@ var makeRandomQuestions = function (questions, questionsCount) {
                 let optionsArray = JSON.parse(currQuestion.options);
 
                 currQuestion.options = JSON.stringify(customHelper.shuffle(optionsArray));
-                
+
                 questionsUniqueRecord.push(currQuestion.guid);
 
                 questionsArr.push(currQuestion);
@@ -313,7 +317,11 @@ var getAllCategories = function (userID, vars) {
             user_id = 0;
         }
 
-        let getAllCategories = getData(false, false, 'categories', false, false, false, vars);
+        let getAllCategories = vars.db.collection('categories')
+            .where('parent_category', '==', '0')
+            .where('is_featured', '==', '0')
+            .where('deleted_at', '==', null)
+            .get();
 
         getAllCategories.then(function (snapshot) {
             let res = [];
@@ -334,12 +342,10 @@ var getAllCategories = function (userID, vars) {
                         response.children = arr[2];
                         response.games_played = arr[3];
 
-                        if ((!response.is_featured && !response.parent_category) || (response.parent_category == 0 && response.parent_category == 0)) {
-                            res.push(response);
-                        }
+                        res.push(response);
 
                         if (incr === snapshot.size) {
-                            resolve(res);
+                            resolve(customHelper.sortByKey(res, 'title'));
                         }
                         incr++;
                     });
@@ -473,7 +479,7 @@ var getCategoryChildren = function (categoryID, vars) {
                 return documentSnapshot.data();
             });
 
-            resolve(dataRecieved);
+            resolve(customHelper.sortByKey(dataRecieved, 'title'));
         })
             .catch(function (err) {
                 reject(err);
@@ -547,7 +553,7 @@ var submitSinglePlayerResult = function (request, vars) {
                 dataRecieved.games_losed = dataRecieved.games_losed ? parseInt(dataRecieved.games_losed) + 1 : 1;
             }
 
-            if (request.win == '1' || request.losed == '1'|| request.draw == '1') {
+            if (request.win == '1' || request.losed == '1' || request.draw == '1') {
 
                 let alreadyPlayedCategories = dataRecieved.played_categories ? dataRecieved.played_categories : {};
 
@@ -630,6 +636,7 @@ var checkUserFollowing = function (followerID, followingUserID, vars) {
         let queryData = vars.db.collection('followUser')
             .where('following_user_id', '==', followingUserID)
             .where('follower_user_id', '==', followerID)
+            .where('deleted_at', '==', null)
             .get();
 
         queryData.then(function (snapshot) {
@@ -727,6 +734,7 @@ var removeFollowUser = function (request, vars) {
         let getDoc = vars.db.collection('followUser')
             .where('following_user_id', '==', request.following_user_id)
             .where('follower_user_id', '==', request.follower_user_id)
+            .where('deleted_at', '==', null)
             .get();
 
         getDoc.then(function (querySnapshot) {
@@ -741,7 +749,7 @@ var removeFollowUser = function (request, vars) {
 
             });
 
-            //change follower and following count
+//change follower and following count
             let senderData = alreadyExist('users', 'guid', request.follower_user_id, vars);
             let recieverData = alreadyExist('users', 'guid', request.following_user_id, vars);
 
@@ -759,7 +767,7 @@ var removeFollowUser = function (request, vars) {
                     let senderDataToUpdate = {'following_count': senderData[0].following_count ? parseInt(senderData[0].following_count) - 1 : 0};
 
                     chunkUpdate('users', request.follower_user_id, senderDataToUpdate, vars);
-                    
+
                     let recieverDataToUpdate = {'follower_count': recieverData[0].follower_count ? parseInt(recieverData[0].follower_count) - 1 : 0};
 
                     chunkUpdate('users', request.following_user_id, recieverDataToUpdate, vars);
@@ -807,11 +815,11 @@ var decreaseNotificationCount = function (userId, vars) {
 
 var sendNotification = function (notificationData, vars) {
     return new Promise(function (resolve, reject) {
-        // Send a message to the device corresponding to the provided
-        // registration token.
+// Send a message to the device corresponding to the provided
+// registration token.
         vars.firebase.messaging().send(notificationData)
             .then((response) => {
-                // Response is a message ID string.
+// Response is a message ID string.
                 resolve(response);
             })
             .catch((error) => {
@@ -1552,7 +1560,7 @@ var getUserDetailsForFollowingFollowList = function (obj, checkUserType, vars) {
                 reject(err);
             });
     });
-    
+
 }
 
 var insertArrayOfObjects = function (arrayOfObjects, moduleName, vars) {
@@ -1564,7 +1572,7 @@ var insertArrayOfObjects = function (arrayOfObjects, moduleName, vars) {
 
             let guid = arrayOfObjects[key]['guid'] ? arrayOfObjects[key]['guid'] : customHelper.generateUUID();
 
-            addToDb(moduleName, guid , arrayOfObjects[key], vars)
+            addToDb(moduleName, guid, arrayOfObjects[key], vars)
                 .then(function () {
 
                     if (i === arrayOfObjects.length) {
@@ -1579,90 +1587,170 @@ var insertArrayOfObjects = function (arrayOfObjects, moduleName, vars) {
 
 }
 
-var sendCustomNotificationsToUsers = function(title , body , vars) {
+var sendCustomNotificationsToUsers = function (title, body, vars) {
 
-    return new Promise(function(resolve , reject){
-
-
-    let allUsers = getData(false , false , 'users' , false , false , false , vars);
+    return new Promise(function (resolve, reject) {
 
 
-    allUsers.then(function (snapshot) {
+        let allUsers = getData(false, false, 'users', false, false, false, vars);
 
-        let i = 1;
 
-        if(!snapshot['docs'].length) {
-            resolve();
-        }
+        allUsers.then(function (snapshot) {
 
-        snapshot['docs'].forEach(function(element) {
+            let i = 1;
 
-            let user = element.data();
-            
-            let replacers = [];
+            if (!snapshot['docs'].length) {
+                resolve();
+            }
 
-            let notifcationData = {
-                'title' : title,
-                'body' : body,
-                'replacer' : ''
-              }
-            
-        
-            let customData = {
-                'recieverID': user.guid,
-                'notification_type': 'custom',
-            };
-        
-            let sendNotificationData = customHelper.makeNotificationData(
-                notifcationData,
-                customData,
-                replacers,
-                user.device_token ? user.device_token : '0000'
-            );
-        
-            let staticNotificationData = JSON.stringify(sendNotificationData);
-        
-            let userID = user.guid;
-        
-            addToRealTimeDb(
-                notificationsCollection,
-                userID + '/listing',
-                customHelper.generateUUID(),
-                sendNotificationData,
-                vars
-            )
-                .then(function () {
-        
-                    increaseNotificationCount(userID, vars);
-        
-                    let notification_status = user.notification_status ? user.notification_status : 1;
-        
-                    if (notification_status) {
-        
-                        sendNotification(JSON.parse(staticNotificationData), vars)
-                            .then(function (res) {
-                                console.log('res', res);
-                            }).catch(function (err) {
-                            console.log('err', err);
-                        });
-                    }
-        
-                }).catch(function (err) {
-                console.log('err', err);
+            snapshot['docs'].forEach(function (element) {
+
+                let user = element.data();
+
+                let replacers = [];
+
+                let notifcationData = {
+                    'title': title,
+                    'body': body,
+                    'replacer': ''
+                }
+
+
+                let customData = {
+                    'recieverID': user.guid,
+                    'notification_type': 'custom',
+                };
+
+                let sendNotificationData = customHelper.makeNotificationData(
+                    notifcationData,
+                    customData,
+                    replacers,
+                    user.device_token ? user.device_token : '0000'
+                );
+
+                let staticNotificationData = JSON.stringify(sendNotificationData);
+
+                let userID = user.guid;
+
+                addToRealTimeDb(
+                    notificationsCollection,
+                    userID + '/listing',
+                    customHelper.generateUUID(),
+                    sendNotificationData,
+                    vars
+                )
+                    .then(function () {
+
+                        increaseNotificationCount(userID, vars);
+
+                        let notification_status = user.notification_status ? user.notification_status : 1;
+
+                        if (notification_status) {
+
+                            sendNotification(JSON.parse(staticNotificationData), vars)
+                                .then(function (res) {
+                                    console.log('res', res);
+                                }).catch(function (err) {
+                                console.log('err', err);
+                            });
+                        }
+
+                    }).catch(function (err) {
+                    console.log('err', err);
+                });
+
+
+                if (snapshot['docs'].length === i) {
+                    resolve('DONE');
+                }
+                i++;
+
             });
 
-
-            if(snapshot['docs'].length === i) {
-                resolve('DONE');
-            }
-            i++;
-
+        }).catch(function (err) {
+            reject(err);
         });
 
-    }).catch(function(err){
-        reject(err);
     });
 
+}
+
+var showAppStatus = function (vars) {
+
+    return new Promise(function (resolve, reject) {
+        let promises = [];
+        promises.push(getData(false, false, 'users', false, false, false, vars));
+        promises.push(getData(false, false, 'categories', false, false, false, vars));
+        promises.push(getData(false, false, 'questions', false, false, false, vars));
+        promises.push(getData(false, false, 'challenges', false, false, false, vars));
+
+        Promise.all(promises)
+            .then(function (dataSet) {
+                resolve({
+                    'totalUsers': dataSet[0].size,
+                    'totalCategories': dataSet[1].size,
+                    'totalQuestions': dataSet[2].size,
+                    'totalChallenges': dataSet[3].size,
+                });
+            })
+            .catch(function (err) {
+                reject(err);
+            });
+    });
+
+
+}
+
+let cascadeQuestionsOnCategory = function (refID, vars) {
+
+    return vars.db.collection('questions')
+    .where('category_id', '==', refID)
+    .where('deleted_at', '==', null)
+    .get()
+    .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+               deleteFromDb('questions',doc.id,vars);
+            });
+        });
+}
+
+let getQuestionsForAdmin = function (vars) {
+
+    return new Promise((resolve, reject) => {
+        let questions = getData(false, false, 'questions', false, false, false, vars);
+
+        questions.then((snapshot) => {
+
+            let dataRecieved = snapshot.docs.map(function (documentSnapshot) {
+                return documentSnapshot.data();
+            });
+
+            let key = 1;
+            if(dataRecieved.length === 0) {
+                resolve([]);
+            }
+            let dataWithCategoryName = [];
+
+            dataRecieved.forEach((element) => {
+
+                getData(false, false, 'categories', 'guid', element.category_id, false, vars)
+                    .then((data) => {
+
+                        let categoryData = data.docs.map(function (documentSnapshot) {
+                            return documentSnapshot.data();
+                        });
+
+                        element.categoryName = categoryData.length > 0 ? categoryData[0].title : 'CATEGORY DELETED';
+
+                        dataWithCategoryName.push(element);
+
+                        if(key === dataRecieved.length) {
+                            resolve(dataWithCategoryName);
+                        }
+                        key ++;
+                    });
+            });
+        });
     });
 
 }
@@ -1695,5 +1783,7 @@ exports.acceptChallenge = acceptChallenge;
 exports.getFollowFollowingUsers = getFollowFollowingUsers;
 exports.insertArrayOfObjects = insertArrayOfObjects;
 exports.sendCustomNotificationsToUsers = sendCustomNotificationsToUsers;
+exports.showAppStatus = showAppStatus;
+exports.cascadeQuestionsOnCategory = cascadeQuestionsOnCategory;
+exports.getQuestionsForAdmin = getQuestionsForAdmin;
 
-                                                        

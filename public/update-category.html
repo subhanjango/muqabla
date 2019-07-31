@@ -2,224 +2,232 @@
 <html lang="en">
 <head>
     <title>Muqabla Pro</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc." />
-    <meta name="author" content="Potenza Global Solutions" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc."/>
+    <meta name="author" content="Potenza Global Solutions"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- app favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.ico">
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <!-- plugin stylesheets -->
-    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css"/>
     <!-- app style -->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"/>
 </head>
 
 <body>
-    <!-- begin app -->
-    <div class="app">
-        <!-- begin app-wrap -->
-        <div class="app-wrap">
-            <!-- begin pre-loader -->
-            <div class="loader">
-                <div class="h-100 d-flex justify-content-center">
-                    <div class="align-self-center">
-                        <img src="assets/img/loader/loader.svg" alt="loader">
-                    </div>
+<!-- begin app -->
+<div class="app">
+    <!-- begin app-wrap -->
+    <div class="app-wrap">
+        <!-- begin pre-loader -->
+        <div class="loader">
+            <div class="h-100 d-flex justify-content-center">
+                <div class="align-self-center">
+                    <img src="assets/img/loader/loader.svg" alt="loader">
                 </div>
             </div>
-            <!-- end pre-loader -->
-            <!-- begin app-header -->
-            <header class="app-header top-bar">
-                
-            </header>
-            <!-- end app-header -->
-            <!-- begin app-container -->
-            <div class="app-container">
-                <!-- begin app-nabar -->
-                <aside class="app-navbar">
-                </aside>
-                <!-- end app-navbar -->
-                <!-- begin app-main -->
-                <div class="app-main" id="main">
-                    <!-- begin container-fluid -->
-                    <div class="container-fluid">
-                        <!-- begin row -->
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="card card-statistics">
-                                    <div class="card-header">
-                                        <div class="card-heading">
-                                            <h4 class="card-title">Update Category</h4>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="update-form">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Title*</label>
-                                                <input type="text" class="form-control" name="title" aria-describedby="emailHelp" id="title" placeholder="Enter category title" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputPassword1">Description*</label>
-                                                <textarea class="form-control" id="description" name="description" ></textarea required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Select a parent category</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="parent_category" id="parent_category">
-                                                        <option value="0">Choose...</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Featured category</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="is_featured" id="is_featured">
-                                                        <option value="0">No</option>
-                                                        <option value="1">Yes</option>
-                                                    </select>
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Catgeory Image</label>
-                                                    <br>
-                                                    <img src="" id="image_uri" style="width:20%">
-                                                    <br>
-                                                    <input type="file"  class="form-control" id="image_upload">
-                                                </div>
-                                                <button type="submit"class="btn btn-primary">Submit</button>
-                                            </form>
-                                        </div>
+        </div>
+        <!-- end pre-loader -->
+        <!-- begin app-header -->
+        <header class="app-header top-bar">
+
+        </header>
+        <!-- end app-header -->
+        <!-- begin app-container -->
+        <div class="app-container">
+            <!-- begin app-nabar -->
+            <aside class="app-navbar">
+            </aside>
+            <!-- end app-navbar -->
+            <!-- begin app-main -->
+            <div class="app-main" id="main">
+                <!-- begin container-fluid -->
+                <div class="container-fluid">
+                    <!-- begin row -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card card-statistics">
+                                <div class="card-header">
+                                    <div class="card-heading">
+                                        <h4 class="card-title">Update Category</h4>
                                     </div>
                                 </div>
+                                <div class="card-body">
+                                    <form id="update-form">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Title*</label>
+                                            <input type="text" class="form-control" name="title"
+                                                   aria-describedby="emailHelp" id="title"
+                                                   placeholder="Enter category title" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Description*</label>
+                                            <textarea class="form-control" id="description"
+                                                      name="description"></textarea required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Select a parent category</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="parent_category"
+                                                    id="parent_category">
+                                                <option value="0">Choose...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Featured category</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="is_featured"
+                                                    id="is_featured">
+                                                <option value="0">No</option>
+                                                <option value="1">Yes</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Catgeory Image</label>
+                                            <br>
+                                            <img src="" id="image_uri" style="width:20%">
+                                            <br>
+                                            <input type="file" class="form-control" id="image_upload">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
                             </div>
-                            <!-- end row -->
                         </div>
-                        <!-- end container-fluid -->
                     </div>
-                    <!-- begin footer -->
-                    
-                    <!-- end footer -->
+                    <!-- end row -->
                 </div>
-                <!-- end app-wrap -->
+                <!-- end container-fluid -->
             </div>
-            <!-- end app -->
-            
-            <!-- firebase cdn -->
-            <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
-            <!-- plugins -->
-            <script src="assets/js/vendors.js"></script>
-            <!-- firebase config -->
-            <script src="assets/js/firebaseConfig.js"></script>
-            <!-- custom app -->
-            <script src="assets/js/app.js"></script>
-            <!-- auth functions-->
-            <script src="assets/js/auth.js"></script>
-            
-            <script src="assets/js/templating.js"></script>
-            
-            <script>
-                
-                
-                $(function(){
-                    
-                    var currID = readCookie('thisID');
-                    
-                    let get_categories_url = firebase_api_url+"/getCategories"; 
-                    let queryParams = {'findFrom' : 'guid' , 'specificColumn' : currID};
-                    
-                    $.get(get_categories_url , queryParams)
-                    .then(function(data){
-                        
-                        let response = data['data'][0];
-                        
-                        $('#title').val(response.title);
-                        $('#description').val(response.description);
-                        $('#is_featured').val(response.is_featured);
-                        $('#image_uri').attr('src', response.image_uri);
-                        
-                        fillParentsDropdown(response.parent_category);
-                    });
-                    
-                    function fillParentsDropdown(selectedGUID) {
-                        let select_elm = $('#parent_category');
-                        select_elm.prop('disabled', 'disabled');                
-                        let is_selected;
-                        $.get(get_categories_url)
-                        .then(function(data){
-                            
-                            let response = data['data'];
-                            
-                            for(let key in response) {
-                                if(!response[key].parent_category || response[key].parent_category == '0') {
-                                    if(selectedGUID == response[key].guid) {
-                                        is_selected = 'selected';
-                                    } else {
-                                        is_selected = '';
-                                    }
-                                    select_elm.append('<option '+is_selected+' value="'+response[key].guid+'">'+response[key].title+'</option>');
-                                }
-                            }
-                            select_elm.prop('disabled',false);
-                            
-                        });
-                    }
-                    
-                    
+            <!-- begin footer -->
+
+            <!-- end footer -->
+        </div>
+        <!-- end app-wrap -->
+    </div>
+    <!-- end app -->
+
+    <!-- firebase cdn -->
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-storage.js"></script>
+    <!-- plugins -->
+    <script src="assets/js/vendors.js"></script>
+    <!-- firebase config -->
+    <script src="assets/js/firebaseConfig.js"></script>
+    <!-- custom app -->
+    <script src="assets/js/app.js"></script>
+    <!-- auth functions-->
+    <script src="assets/js/auth.js"></script>
+
+    <script src="assets/js/templating.js"></script>
+
+    <script>
+
+
+        $(function () {
+
+            var currID = readCookie('thisID');
+
+            let get_categories_url = firebase_api_url + "/getCategories";
+            let queryParams = {'findFrom': 'guid', 'specificColumn': currID};
+
+            $.get(get_categories_url, queryParams)
+                .then(function (data) {
+
+                    let response = data['data'][0];
+
+                    $('#title').val(response.title);
+                    $('#description').val(response.description);
+                    $('#is_featured').val(response.is_featured);
+                    $('#image_uri').attr('src', response.image_uri);
+
+                    fillParentsDropdown(response.parent_category);
                 });
-                
-                
-                function uploadMe() {
-                    return new Promise(function(resolve , reject){
-                        
-                        var fileButton = document.getElementById("image_upload");
-                        var file = fileButton.files[0];
-                        if(!file) {
-                            reject();
+
+            function fillParentsDropdown(selectedGUID) {
+                let select_elm = $('#parent_category');
+                select_elm.prop('disabled', 'disabled');
+                let is_selected;
+                $.get(get_categories_url)
+                    .then(function (data) {
+
+                        let response = data['data'];
+
+                        for (let key in response) {
+                            if (!response[key].parent_category || response[key].parent_category == '0') {
+                                if (selectedGUID == response[key].guid) {
+                                    is_selected = 'selected';
+                                } else {
+                                    is_selected = '';
+                                }
+                                select_elm.append('<option ' + is_selected + ' value="' + response[key].guid + '">' + response[key].title + '</option>');
+                            }
                         }
-                        var storageRef = firebase.storage().ref('/topic-icons/'+file.name);
-                        storageRef.put(file)
-                        .then(function(data){
-                            data.ref.getDownloadURL().then(function(downloadURL) {
-                                resolve(downloadURL);
-                            });
-                        });
-                        
-                    })
-                }
-                
-                $('#update-form').on('submit', function( e ){ 
-                    
-                    e.preventDefault();
-                    var form = $( this ), // this will resolve to the form submitted
-                    action = firebase_api_url+'/chunkUpdateCategories',
-                    data = {};
-                    
-                    form.find( '[name]' ).each( function( i , v ){
-                        var input = $( this ), // resolves to current input element.
-                        name = input.attr( 'name' ),
-                        value = input.val();
-                        data[name] = value;
+                        select_elm.prop('disabled', false);
+
                     });
-                    
-                    uploadMe()
-                    .then(function(imageURL){
-                        data['image_uri'] = imageURL;
-                    })
-                    .finally(function(){
-                        
-                        data['ref_id'] = readCookie('thisID');
-                        
-                        $.post(action , data)
-                        .then(function(res){
+            }
+
+
+        });
+
+
+        function uploadMe() {
+            return new Promise(function (resolve, reject) {
+
+                var fileButton = document.getElementById("image_upload");
+                var file = fileButton.files[0];
+                if (!file) {
+                    reject();
+                }
+                var storageRef = firebase.storage().ref('/topic-icons/' + file.name);
+                storageRef.put(file)
+                    .then(function (data) {
+                        data.ref.getDownloadURL().then(function (downloadURL) {
+                            resolve(downloadURL);
+                        });
+                    });
+
+            })
+        }
+
+        $('#update-form').on('submit', function (e) {
+
+            e.preventDefault();
+            var form = $(this), // this will resolve to the form submitted
+                action = firebase_api_url + '/chunkUpdateCategories',
+                data = {};
+
+            form.find('[name]').each(function (i, v) {
+                var input = $(this), // resolves to current input element.
+                    name = input.attr('name'),
+                    value = input.val();
+                data[name] = value;
+            });
+
+            uploadMe()
+                .then(function (imageURL) {
+                    data['image_uri'] = imageURL;
+                })
+                .finally(function () {
+
+                    data['ref_id'] = readCookie('thisID');
+
+                    $.post(action, data)
+                        .then(function (res) {
                             alert(res.msg);
                             location.reload();
                         });
-                    });                    
-                    
-                    
                 });
-                
-            </script>
-        </body>
-        
-        </html>
+
+
+        });
+
+    </script>
+</body>
+
+</html>

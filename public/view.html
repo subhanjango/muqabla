@@ -2,264 +2,268 @@
 <html lang="en">
 <head>
     <title>Muqabla Pro</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc." />
-    <meta name="author" content="Potenza Global Solutions" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc."/>
+    <meta name="author" content="Potenza Global Solutions"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- app favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.ico">
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <!-- plugin stylesheets -->
-    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css"/>
     <!-- app style -->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"/>
 </head>
 
 <body>
-    <!-- begin app -->
-    <div class="app">
-        <!-- begin app-wrap -->
-        <div class="app-wrap">
-            <!-- begin pre-loader -->
-            <div class="loader">
-                <div class="h-100 d-flex justify-content-center">
-                    <div class="align-self-center">
-                        <img src="assets/img/loader/loader.svg" alt="loader">
-                    </div>
+<!-- begin app -->
+<div class="app">
+    <!-- begin app-wrap -->
+    <div class="app-wrap">
+        <!-- begin pre-loader -->
+        <div class="loader">
+            <div class="h-100 d-flex justify-content-center">
+                <div class="align-self-center">
+                    <img src="assets/img/loader/loader.svg" alt="loader">
                 </div>
             </div>
-            <!-- end pre-loader -->
-            <!-- begin app-header -->
-            <header class="app-header top-bar">
-                
-            </header>
-            <!-- end app-header -->
-            <!-- begin app-container -->
-            <div class="app-container">
-                <!-- begin app-nabar -->
-                <aside class="app-navbar">
-                </aside>
-                <!-- end app-navbar -->
-                <!-- begin app-main -->
-                <div class="app-main" id="main">
-                    <div class="container-fluid">
-                        <!-- begin row -->
-                        <div class="row">
-                            <div class="col-md-12 m-b-30">
-                            </div>
+        </div>
+        <!-- end pre-loader -->
+        <!-- begin app-header -->
+        <header class="app-header top-bar">
+
+        </header>
+        <!-- end app-header -->
+        <!-- begin app-container -->
+        <div class="app-container">
+            <!-- begin app-nabar -->
+            <aside class="app-navbar">
+            </aside>
+            <!-- end app-navbar -->
+            <!-- begin app-main -->
+            <div class="app-main" id="main">
+                <div class="container-fluid">
+                    <!-- begin row -->
+                    <div class="row">
+                        <div class="col-md-12 m-b-30">
                         </div>
-                        <!-- end row -->
-                        <!-- begin row -->
-                        <div class="row">
-                            
-                            <div class="col-xl-12">
-                                <div class="card card-statistics">
-                                    <div class="card-header">
-                                        <div class="card-heading">
-                                            <h4 class="card-title"></h4>
-                                        </div>
+                    </div>
+                    <!-- end row -->
+                    <!-- begin row -->
+                    <div class="row">
+
+                        <div class="col-xl-12">
+                            <div class="card card-statistics">
+                                <div class="card-header">
+                                    <div class="card-heading">
+                                        <h4 class="card-title"></h4>
                                     </div>
-                                    <div class="card-body">
-                                        <form id="details">
-                                        </form>
-                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form id="details">
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        <!-- end row -->
                     </div>
-                    <!-- end container-fluid -->
+                    <!-- end row -->
                 </div>
-                <!-- begin footer -->
-                
-                <!-- end footer -->
+                <!-- end container-fluid -->
             </div>
-            <!-- end app-wrap -->
+            <!-- begin footer -->
+
+            <!-- end footer -->
         </div>
-        <!-- end app -->
-        
-        <!-- firebase cdn -->
-        <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
-        <!-- plugins -->
-        <script src="assets/js/vendors.js"></script>
-        <!-- firebase config -->
-        <script src="assets/js/firebaseConfig.js"></script>
-        <!-- custom app -->
-        <script src="assets/js/app.js"></script>
-        <!-- auth functions-->
-        <script src="assets/js/auth.js"></script>
-        
-        <script src="assets/js/templating.js"></script>
-        
-        <script>
-            
-            let subject = getParameterByName('subject');
-            
-            let currID = readCookie('thisID');
-            
-            if(!subject || !currID) {
-                redirectTo('index.html');
-            }
-            
-            let pageTitle , apiURL , queryParams , detailsKey;
-            
-            switch(subject) {
-                
-                case 'category':
+        <!-- end app-wrap -->
+    </div>
+    <!-- end app -->
+
+    <!-- firebase cdn -->
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
+    <!-- plugins -->
+    <script src="assets/js/vendors.js"></script>
+    <!-- firebase config -->
+    <script src="assets/js/firebaseConfig.js"></script>
+    <!-- custom app -->
+    <script src="assets/js/app.js"></script>
+    <!-- auth functions-->
+    <script src="assets/js/auth.js"></script>
+
+    <script src="assets/js/templating.js"></script>
+
+    <script>
+
+        let subject = getParameterByName('subject');
+
+        let currID = readCookie('thisID');
+
+        if (!subject || !currID) {
+            redirectTo('index.html');
+        }
+
+        let pageTitle, apiURL, queryParams, detailsKey;
+
+        switch (subject) {
+
+            case 'category':
                 pageTitle = 'Category Details';
-                queryParams = '?categoryID='+currID+'&userID=1';
+                queryParams = '?categoryID=' + currID + '&userID=1';
                 apiURL = '/categoryDetails';
                 detailsKey = [
-                {'heading' : 'Title' , 'keyToLook' : 'title' , 'type' : 'text'},
-                {'heading' : 'Description' , 'keyToLook' : 'description' , 'type' : 'text'},
-                {'heading' : 'No. of Followers' , 'keyToLook' : 'followers' , 'type' : 'text'},
-                {'heading' : 'No. of games played' , 'keyToLook' : 'games_played' , 'type' : 'text'},
-                {'heading' : 'Image' , 'keyToLook' : 'image_uri' , 'type' : 'image'},
-                {'heading' : 'Child Categories' , 'arrayToFetch' : 'children' , 'keysFromArray' : [
-                {'heading' : 'Title' , 'keyToLook' : 'title' , 'type' : 'text'},
-                {'heading' : 'Description' , 'keyToLook' : 'description' , 'type' : 'text'},
-                {'heading' : 'Image' , 'keyToLook' : 'image_uri' , 'type' : 'image'}
-                ]
-            },
-            ];
-            break;
-            
+                    {'heading': 'Title', 'keyToLook': 'title', 'type': 'text'},
+                    {'heading': 'Description', 'keyToLook': 'description', 'type': 'text'},
+                    {'heading': 'No. of Followers', 'keyToLook': 'followers', 'type': 'text'},
+                    {'heading': 'No. of games played', 'keyToLook': 'games_played', 'type': 'text'},
+                    {'heading': 'Image', 'keyToLook': 'image_uri', 'type': 'image'},
+                    {
+                        'heading': 'Child Categories', 'arrayToFetch': 'children', 'keysFromArray': [
+                            {'heading': 'Title', 'keyToLook': 'title', 'type': 'text'},
+                            {'heading': 'Description', 'keyToLook': 'description', 'type': 'text'},
+                            {'heading': 'Image', 'keyToLook': 'image_uri', 'type': 'image'}
+                        ]
+                    },
+                ];
+                break;
+
             case 'question':
-            pageTitle = 'Question Details';
-            queryParams = '?specificColumn='+currID+'&findFrom=guid';
-            apiURL = '/getQuestions';
-            detailsKey = [
-            {'heading' : 'Question' , 'keyToLook' : 'question' , 'type' : 'text'},
-            {'heading' : 'Category' , 'keyToLook' : 'category' , 'type' : 'text'},
-            {'heading' : 'Options' , 'arrayToFetch' : 'options' , 'keysFromArray' : [
-            {'heading' : 'Option' , 'keyToLook' : 'option' , 'type' : 'text'},
-            {'heading' : 'Is it correct?' , 'keyToLook' : 'is_correct' , 'type' : 'text'}
-            ]
+                pageTitle = 'Question Details';
+                queryParams = '?specificColumn=' + currID + '&findFrom=guid';
+                apiURL = '/getQuestions';
+                detailsKey = [
+                    {'heading': 'Question', 'keyToLook': 'question', 'type': 'text'},
+                    {'heading': 'Category', 'keyToLook': 'category', 'type': 'text'},
+                    {
+                        'heading': 'Options', 'arrayToFetch': 'options', 'keysFromArray': [
+                            {'heading': 'Option', 'keyToLook': 'option', 'type': 'text'},
+                            {'heading': 'Is it correct?', 'keyToLook': 'is_correct', 'type': 'text'}
+                        ]
+                    }
+
+                ];
+                break;
+
+            case 'user':
+                pageTitle = 'User Details';
+                queryParams = '?specificColumn=' + currID + '&findFrom=guid';
+                apiURL = '/getUser';
+                detailsKey = [
+                    {'heading': 'Name', 'keyToLook': 'first_name', 'type': 'text'},
+                    {'heading': 'Email', 'keyToLook': 'email', 'type': 'text'},
+                    {'heading': 'Games Played', 'keyToLook': 'games_played', 'type': 'text'},
+                    {'heading': 'Games Draw', 'keyToLook': 'games_draw', 'type': 'text'},
+                    {'heading': 'Games Won', 'keyToLook': 'games_won', 'type': 'text'},
+                    {'heading': 'Games Losed', 'keyToLook': 'games_losed', 'type': 'text'},
+                    {'heading': 'Total Points', 'keyToLook': 'total_points', 'type': 'text'},
+                    {'heading': 'City', 'keyToLook': 'city', 'type': 'text'},
+                    {'heading': 'Date Of Birth', 'keyToLook': 'dob', 'type': 'text'},
+                    {'heading': 'Experience', 'keyToLook': 'current_exp', 'type': 'text'},
+                    {'heading': 'Followers', 'keyToLook': 'follower_count', 'type': 'text'},
+                    {'heading': 'Following', 'keyToLook': 'following_count', 'type': 'text'},
+                    {'heading': 'Avatar', 'keyToLook': 'photoURL', 'type': 'image'},
+
+                ];
+                break;
+
+            default :
+                redirectTo('index.html');
+                break;
         }
-        
-        ];
-        break;
-        
-        case 'user':
-        pageTitle = 'User Details';
-        queryParams = '?specificColumn='+currID+'&findFrom=guid';
-        apiURL = '/getUser';
-        detailsKey = [
-        {'heading' : 'Name' , 'keyToLook' : 'first_name' , 'type' : 'text'},
-        {'heading' : 'Email' , 'keyToLook' : 'email' , 'type' : 'text'},
-        {'heading' : 'Games Played' , 'keyToLook' : 'games_played' , 'type' : 'text'},
-        {'heading' : 'Games Draw' , 'keyToLook' : 'games_draw' , 'type' : 'text'},
-        {'heading' : 'Games Won' , 'keyToLook' : 'games_won' , 'type' : 'text'},
-        {'heading' : 'Games Losed' , 'keyToLook' : 'games_losed' , 'type' : 'text'},
-        {'heading' : 'Total Points' , 'keyToLook' : 'total_points' , 'type' : 'text'},
-        {'heading' : 'City' , 'keyToLook' : 'city' , 'type' : 'text'},
-        {'heading' : 'Date Of Birth' , 'keyToLook' : 'dob' , 'type' : 'text'},
-        {'heading' : 'Experience' , 'keyToLook' : 'current_exp' , 'type' : 'text'},
-        {'heading' : 'Followers' , 'keyToLook' : 'follower_count' , 'type' : 'text'},
-        {'heading' : 'Following' , 'keyToLook' : 'following_count' , 'type' : 'text'},
-        {'heading' : 'Avatar' , 'keyToLook' : 'photoURL' , 'type' : 'image'},
-        
-        ];
-        break;
-        
-        default :
-        redirectTo('index.html');
-        break;
-    }
-    
-    $('.card-title').html(pageTitle);
-    
-    let ajax_url = firebase_api_url+apiURL+queryParams; 
-    
-    $(function(){
-        
-        $.get(ajax_url)
-        .then(function(data){
-            let detailRow = '';
-            
-            if(data['data'][0]) {
-                data['data'] = data['data'][0];
-            }
-            
-            for(let key in detailsKey) {
-                
-                if(detailsKey[key]['keyToLook']) {
-                    
-                    let detailHeading = detailsKey[key]['heading'];
-                    let dataForDetail = data['data'][detailsKey[key]['keyToLook']];
-                    let typeOfDetail = detailsKey[key]['type'];
-                    
-                    detailRow += makeDetailRow(detailHeading , dataForDetail , typeOfDetail);
-                    
-                } else if(detailsKey[key]['arrayToFetch']) {
-                    
-                    let detailHeading = detailsKey[key]['heading'];
-                    let dataForDetail = data['data'][detailsKey[key]['arrayToFetch']];
-                    let keysToFetch = detailsKey[key]['keysFromArray'];
-                    
-                    detailRow += makeDetailRowFromArray(detailHeading , dataForDetail , keysToFetch);
-                    
-                }
-            }
-            
-            $('#details').append(detailRow);
-            
+
+        $('.card-title').html(pageTitle);
+
+        let ajax_url = firebase_api_url + apiURL + queryParams;
+
+        $(function () {
+
+            $.get(ajax_url)
+                .then(function (data) {
+                    let detailRow = '';
+
+                    if (data['data'][0]) {
+                        data['data'] = data['data'][0];
+                    }
+
+                    for (let key in detailsKey) {
+
+                        if (detailsKey[key]['keyToLook']) {
+
+                            let detailHeading = detailsKey[key]['heading'];
+                            let dataForDetail = data['data'][detailsKey[key]['keyToLook']];
+                            let typeOfDetail = detailsKey[key]['type'];
+
+                            detailRow += makeDetailRow(detailHeading, dataForDetail, typeOfDetail);
+
+                        } else if (detailsKey[key]['arrayToFetch']) {
+
+                            let detailHeading = detailsKey[key]['heading'];
+                            let dataForDetail = data['data'][detailsKey[key]['arrayToFetch']];
+                            let keysToFetch = detailsKey[key]['keysFromArray'];
+
+                            detailRow += makeDetailRowFromArray(detailHeading, dataForDetail, keysToFetch);
+
+                        }
+                    }
+
+                    $('#details').append(detailRow);
+
+                });
         });
-    });
-    
-    function makeDetailRow(heading , data , type) {
-        let html;
-        
-        if (!data) {
-            data = 'Not defined';
+
+        function makeDetailRow(heading, data, type) {
+            let html;
+
+            if (!data) {
+                data = 'Not defined';
+            }
+            switch (type) {
+
+
+                case 'text':
+                    html = '<div class="form-group row"><label for="inputEmail3" class="col-sm-3 col-form-label">' + heading + ': </label><div class="col-sm-9"><input type="email" class="form-control" id="inputEmail3" placeholder="Email" readonly value="' + data + '"></div></div>';
+                    break;
+
+                case 'image':
+                    html = '<div class="form-group row"><label for="inputEmail3" class="col-sm-3 col-form-label">' + heading + '</label><div class="col-sm-9"><img style="width: 50%;" src="' + data + '"></div></div>';
+                    break;
+            }
+
+            return html;
         }
-        switch(type) {
-            
-            
-            case 'text':
-            html = '<div class="form-group row"><label for="inputEmail3" class="col-sm-3 col-form-label">'+heading+': </label><div class="col-sm-9"><input type="email" class="form-control" id="inputEmail3" placeholder="Email" readonly value="'+data+'"></div></div>';
-            break;
-            
-            case 'image':
-            html = '<div class="form-group row"><label for="inputEmail3" class="col-sm-3 col-form-label">'+heading+'</label><div class="col-sm-9"><img style="width: 50%;" src="'+data+'"></div></div>';
-            break;
-        }
-        
-        return html;
-    }
-    
-    function makeDetailRowFromArray(heading , array , keysToFetchFromArray) {
-        
-        console.log(typeof array);
-        
-        if(typeof array === 'string') {
-            array = JSON.parse(array);
-        }
-        
-        if(array.length == 0) {
-            return '';
-        }
-        
-        let childHtml = '<div class="col-xl-12"><div class="card card-statistics"><div class="card-header"><div class="card-heading"><h4 class="card-title">'+heading+'</h4></div></div><div class="card-body"><form>';
-            
-            
-            for(let key in array) {
-                for(let innerKey in keysToFetchFromArray) {
-                    
+
+        function makeDetailRowFromArray(heading, array, keysToFetchFromArray) {
+
+            console.log(typeof array);
+
+            if (typeof array === 'string') {
+                array = JSON.parse(array);
+            }
+
+            if (array.length == 0) {
+                return '';
+            }
+
+            let childHtml = '<div class="col-xl-12"><div class="card card-statistics"><div class="card-header"><div class="card-heading"><h4 class="card-title">' + heading + '</h4></div></div><div class="card-body"><form>';
+
+
+            for (let key in array) {
+                for (let innerKey in keysToFetchFromArray) {
+
                     let detailHeading = keysToFetchFromArray[innerKey]['heading'];
                     let dataForDetail = array[key][keysToFetchFromArray[innerKey]['keyToLook']];
                     let typeOfDetail = keysToFetchFromArray[innerKey]['type'];
-                    
-                    childHtml += makeDetailRow(detailHeading , dataForDetail , typeOfDetail);
+
+                    childHtml += makeDetailRow(detailHeading, dataForDetail, typeOfDetail);
                 }
             }
-            
+
             childHtml += '</form></div></div></div>';
-            
+
             return childHtml;
-            
+
         }
     </script>
 </body>

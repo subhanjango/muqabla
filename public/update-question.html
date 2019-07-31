@@ -2,257 +2,273 @@
 <html lang="en">
 <head>
     <title>Muqabla Pro</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc." />
-    <meta name="author" content="Potenza Global Solutions" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc."/>
+    <meta name="author" content="Potenza Global Solutions"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- app favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.ico">
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <!-- plugin stylesheets -->
-    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors.css"/>
     <!-- app style -->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"/>
 </head>
 
 <body>
-    <!-- begin app -->
-    <div class="app">
-        <!-- begin app-wrap -->
-        <div class="app-wrap">
-            <!-- begin pre-loader -->
-            <div class="loader">
-                <div class="h-100 d-flex justify-content-center">
-                    <div class="align-self-center">
-                        <img src="assets/img/loader/loader.svg" alt="loader">
-                    </div>
+<!-- begin app -->
+<div class="app">
+    <!-- begin app-wrap -->
+    <div class="app-wrap">
+        <!-- begin pre-loader -->
+        <div class="loader">
+            <div class="h-100 d-flex justify-content-center">
+                <div class="align-self-center">
+                    <img src="assets/img/loader/loader.svg" alt="loader">
                 </div>
             </div>
-            <!-- end pre-loader -->
-            <!-- begin app-header -->
-            <header class="app-header top-bar">
-                
-            </header>
-            <!-- end app-header -->
-            <!-- begin app-container -->
-            <div class="app-container">
-                <!-- begin app-nabar -->
-                <aside class="app-navbar">
-                </aside>
-                <!-- end app-navbar -->
-                <!-- begin app-main -->
-                <div class="app-main" id="main">
-                    <!-- begin container-fluid -->
-                    <div class="container-fluid">
-                        <!-- begin row -->
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="card card-statistics">
-                                    <div class="card-header">
-                                        <div class="card-heading">
-                                            <h4 class="card-title">Update Question</h4>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="update-form">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Question*</label>
-                                                <input type="text" class="form-control" name="question" aria-describedby="emailHelp" id="question" placeholder="Enter question" required>
-                                            </div>
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Select a category</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="category" id="category">
-                                                        <option value="0">Choose...</option>
-                                                    </select>
-                                                </div>
+        </div>
+        <!-- end pre-loader -->
+        <!-- begin app-header -->
+        <header class="app-header top-bar">
 
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Option 1*</label>
-                                                    <input type="text" class="form-control" name="option0" aria-describedby="emailHelp" id="option0" placeholder="Enter option 1" required>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Is it correct?</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="is_correct0" id="is_correct0">
-                                                        <option value="true">Yes</option>
-                                                        <option value="false">No</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Option 2*</label>
-                                                    <input type="text" class="form-control" name="option1" aria-describedby="emailHelp" id="option1" placeholder="Enter option 1" required>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Is it correct?</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="is_correct1" id="is_correct1">
-                                                        <option value="true">Yes</option>
-                                                        <option value="false">No</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Option 3*</label>
-                                                    <input type="text" class="form-control" name="option2" aria-describedby="emailHelp" id="option2" placeholder="Enter option 1" required>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Is it correct?</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="is_correct2" id="is_correct2">
-                                                        <option value="true">Yes</option>
-                                                        <option value="false">No</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Option 4*</label>
-                                                    <input type="text" class="form-control" name="option3" aria-describedby="emailHelp" id="option3" placeholder="Enter option 1" required>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputPassword1">Is it correct?</label>
-                                                    <select class="custom-select my-1 mr-sm-2" name="is_correct3" id="is_correct3">
-                                                        <option value="true">Yes</option>
-                                                        <option value="false">No</option>
-                                                    </select>
-                                                </div>
-
-                                                <button type="submit"class="btn btn-primary">Submit</button>
-                                            </form>
-                                        </div>
+        </header>
+        <!-- end app-header -->
+        <!-- begin app-container -->
+        <div class="app-container">
+            <!-- begin app-nabar -->
+            <aside class="app-navbar">
+            </aside>
+            <!-- end app-navbar -->
+            <!-- begin app-main -->
+            <div class="app-main" id="main">
+                <!-- begin container-fluid -->
+                <div class="container-fluid">
+                    <!-- begin row -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card card-statistics">
+                                <div class="card-header">
+                                    <div class="card-heading">
+                                        <h4 class="card-title">Update Question</h4>
                                     </div>
                                 </div>
+                                <div class="card-body">
+                                    <form id="update-form">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Question*</label>
+                                            <input type="text" class="form-control" name="question"
+                                                   aria-describedby="emailHelp" id="question"
+                                                   placeholder="Enter question" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Select a category</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="category" id="category">
+                                                <option value="0">Choose...</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Option 1*</label>
+                                            <input type="text" class="form-control" name="option0"
+                                                   aria-describedby="emailHelp" id="option0"
+                                                   placeholder="Enter option 1" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Is it correct?</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="is_correct0"
+                                                    id="is_correct0">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Option 2*</label>
+                                            <input type="text" class="form-control" name="option1"
+                                                   aria-describedby="emailHelp" id="option1"
+                                                   placeholder="Enter option 1" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Is it correct?</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="is_correct1"
+                                                    id="is_correct1">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Option 3*</label>
+                                            <input type="text" class="form-control" name="option2"
+                                                   aria-describedby="emailHelp" id="option2"
+                                                   placeholder="Enter option 1" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Is it correct?</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="is_correct2"
+                                                    id="is_correct2">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Option 4*</label>
+                                            <input type="text" class="form-control" name="option3"
+                                                   aria-describedby="emailHelp" id="option3"
+                                                   placeholder="Enter option 1" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Is it correct?</label>
+                                            <select class="custom-select my-1 mr-sm-2" name="is_correct3"
+                                                    id="is_correct3">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
                             </div>
-                            <!-- end row -->
                         </div>
-                        <!-- end container-fluid -->
                     </div>
-                    <!-- begin footer -->
-                    
-                    <!-- end footer -->
+                    <!-- end row -->
                 </div>
-                <!-- end app-wrap -->
+                <!-- end container-fluid -->
             </div>
-            <!-- end app -->
-            
-            <!-- firebase cdn -->
-            <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
-            <!-- plugins -->
-            <script src="assets/js/vendors.js"></script>
-            <!-- firebase config -->
-            <script src="assets/js/firebaseConfig.js"></script>
-            <!-- custom app -->
-            <script src="assets/js/app.js"></script>
-            <!-- auth functions-->
-            <script src="assets/js/auth.js"></script>
-            
-            <script src="assets/js/templating.js"></script>
-            
-            <script>
-                
-                
-                $(function(){
-                    
-                    var currID = readCookie('thisID');
-                    
-                    let get_categories_url = firebase_api_url+"/getCategories"; 
-                    let get_question_url = firebase_api_url+"/getQuestions"; 
-                    let queryParams = {'findFrom' : 'guid' , 'specificColumn' : currID};
-                    
-                    $.get(get_question_url , queryParams)
-                    .then(function(data){
-                        
-                        let response = data['data'][0];
-                        
-                        $('#question').val(response.question);
-                       
-                        fillCategoriesDropdown(response.category);
+            <!-- begin footer -->
 
-                        fillOptions(JSON.parse(response.options));
-                    });
-                    
-                    function fillCategoriesDropdown(selectedGUID) {
-                        let select_elm = $('#category');
-                        select_elm.prop('disabled', 'disabled');                
-                        let is_selected;
-                        $.get(get_categories_url)
-                        .then(function(data){
-                            
-                            let response = data['data'];
-                            
-                            for(let key in response) {
+            <!-- end footer -->
+        </div>
+        <!-- end app-wrap -->
+    </div>
+    <!-- end app -->
 
-                                  if(selectedGUID == response[key].guid) {
-                                        is_selected = 'selected';
-                                    } else {
-                                        is_selected = '';
-                                    }
-                                    select_elm.append('<option '+is_selected+' value="'+response[key].guid+'">'+response[key].title+'</option>');
-                            }
-                            select_elm.prop('disabled',false);
-                            
-                        });
-                    }
-                    
-                    
+    <!-- firebase cdn -->
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
+    <!-- plugins -->
+    <script src="assets/js/vendors.js"></script>
+    <!-- firebase config -->
+    <script src="assets/js/firebaseConfig.js"></script>
+    <!-- custom app -->
+    <script src="assets/js/app.js"></script>
+    <!-- auth functions-->
+    <script src="assets/js/auth.js"></script>
+
+    <script src="assets/js/templating.js"></script>
+
+    <script>
+
+
+        $(function () {
+
+            var currID = readCookie('thisID');
+
+            let get_categories_url = firebase_api_url + "/getCategories";
+            let get_question_url = firebase_api_url + "/getQuestions";
+            let queryParams = {'findFrom': 'guid', 'specificColumn': currID};
+
+            $.get(get_question_url, queryParams)
+                .then(function (data) {
+
+                    let response = data['data'][0];
+
+                    $('#question').val(response.question);
+
+                    fillCategoriesDropdown(response.category);
+
+                    fillOptions(JSON.parse(response.options));
                 });
 
-                function fillOptions(obj) {
-                    for(let key in obj) {
-                        
-                        let option_elm = $('#option'+key);
-                        let is_correct_elm = $('#is_correct'+key);
-                        let data_set = obj[key];
+            function fillCategoriesDropdown(selectedGUID) {
+                let select_elm = $('#category');
+                select_elm.prop('disabled', 'disabled');
+                let is_selected;
+                $.get(get_categories_url)
+                    .then(function (data) {
 
-                        option_elm.val(data_set['option']);
-                        console.log(data_set['is_correct']);
-                        is_correct_elm.val(data_set['is_correct'] ? 'true' : 'false');
-                    }
-                }
-                
-                
-                $('#update-form').on('submit', function( e ){ 
-                    
-                    e.preventDefault();
-                    var form = $( this ), // this will resolve to the form submitted
-                    action = firebase_api_url+'/chunkUpdateQuestions',
-                    data = {};
-                    
-                    form.find( '[name]' ).each( function( i , v ){
-                        var input = $( this ), // resolves to current input element.
-                        name = input.attr( 'name' ),
-                        value = input.val();
-                        data[name] = value;
-                    });
-                    
-                    let options_arr = [];
+                        let response = data['data'];
 
-                    for(let i = 0 ; i < 4 ; i++) {
-                        options_arr.push(
-                            {
-                                'option' : data['option'+i],
-                                'is_correct' : data['is_correct'+i] == 'true' ? true : false
+                        for (let key in response) {
+
+                            if (selectedGUID == response[key].guid) {
+                                is_selected = 'selected';
+                            } else {
+                                is_selected = '';
                             }
-                        );
+                            select_elm.append('<option ' + is_selected + ' value="' + response[key].guid + '">' + response[key].title + '</option>');
+                        }
+                        select_elm.prop('disabled', false);
 
-                        delete data['option'+i];
-                        delete data['is_correct'+i];
+                    });
+            }
+
+
+        });
+
+        function fillOptions(obj) {
+            for (let key in obj) {
+
+                let option_elm = $('#option' + key);
+                let is_correct_elm = $('#is_correct' + key);
+                let data_set = obj[key];
+
+                option_elm.val(data_set['option']);
+                console.log(data_set['is_correct']);
+                is_correct_elm.val(data_set['is_correct'] ? 'true' : 'false');
+            }
+        }
+
+
+        $('#update-form').on('submit', function (e) {
+
+            e.preventDefault();
+            var form = $(this), // this will resolve to the form submitted
+                action = firebase_api_url + '/chunkUpdateQuestions',
+                data = {};
+
+            form.find('[name]').each(function (i, v) {
+                var input = $(this), // resolves to current input element.
+                    name = input.attr('name'),
+                    value = input.val();
+                data[name] = value;
+            });
+
+            let options_arr = [];
+
+            for (let i = 0; i < 4; i++) {
+                options_arr.push(
+                    {
+                        'option': data['option' + i],
+                        'is_correct': data['is_correct' + i] == 'true' ? true : false
                     }
+                );
 
-                    data['options'] = JSON.stringify(options_arr);
-                    data['ref_id'] = readCookie('thisID');
-                    data['category_id'] = data['category'];
+                delete data['option' + i];
+                delete data['is_correct' + i];
+            }
 
-                        $.post(action , data)
-                        .then(function(res){
-                            alert(res.msg);
-                            location.reload();
-                        });               
-                    
-                    
+            data['options'] = JSON.stringify(options_arr);
+            data['ref_id'] = readCookie('thisID');
+            data['category_id'] = data['category'];
+
+            $.post(action, data)
+                .then(function (res) {
+                    alert(res.msg);
+                    location.reload();
                 });
-                
-            </script>
-        </body>
-        
-        </html>
+
+
+        });
+
+    </script>
+</body>
+
+</html>
